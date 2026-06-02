@@ -43,4 +43,21 @@ public class VideoController {
         List<VideoDTO> videos = videoService.getUserVideos(userId);
         return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", videos));
     }
+
+    @PostMapping("/admin/audit")
+    public ResponseEntity<Map<String, Object>> auditVideo(@RequestBody Map<String, Object> body) {
+        Long videoId = Long.valueOf(body.get("videoId").toString());
+        Integer status = Integer.valueOf(body.get("status").toString());
+        videoService.auditVideo(videoId, status);
+        return ResponseEntity.ok(Map.of("code", 200, "message", "审核成功", "data", ""));
+    }
+
+    @GetMapping("/admin/list")
+    public ResponseEntity<Map<String, Object>> adminList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer status) {
+        List<VideoDTO> videos = videoService.adminListVideos(page, size, status);
+        return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", videos));
+    }
 }

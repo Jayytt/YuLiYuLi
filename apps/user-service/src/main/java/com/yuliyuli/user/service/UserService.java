@@ -2,6 +2,7 @@ package com.yuliyuli.user.service;
 
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yuliyuli.user.config.JwtUtil;
 import com.yuliyuli.user.dto.*;
 import com.yuliyuli.user.entity.User;
@@ -10,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -88,6 +91,35 @@ public class UserService {
                 );
             }
         } catch (Exception ignored) {
+        }
+    }
+
+    public List<UserDTO> adminListUsers(int page, int size, String keyword) {
+        Page<User> userPage = new Page<>(page, size);
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        if (keyword != null && !keyword.isEmpty()) {
+            wrapper.and(w -> w
+                    .like(User::getUsername, keyword)
+                    .or()
+                    .like(User::getNickname, keyword)
+            );
+        }
+        wrapper.orderByDesc(User::getCreatedAt);
+        Page<User> result = userRepository.selectPage(userPage, wrapper);
+        return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public void toggleUserStatus(Long userId) {
+        User user = userRepository.selectById(userId);
+        if (user != null) {
+            // User is active (deleted=0), ban them
+            userRepository.updateDeletedById(userId, 1);
+        } else {
+            // User might be banned (deleted=1), unban them
+            int updated = userRepository.updateDeletedById(userId, 0);
+            if (updated == 0) {
+                throw new RuntimeException("用户不存在");
+            }
         }
     }
 

@@ -42,7 +42,9 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
     );
 
     private static final List<String> ADMIN_LIST = List.of(
-            "/api/admin/**"
+            "/api/admin/**",
+            "/api/video/admin/**",
+            "/api/user/admin/**"
     );
 
     @Override

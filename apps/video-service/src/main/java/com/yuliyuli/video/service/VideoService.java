@@ -83,6 +83,26 @@ public class VideoService {
         return videos.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    public void auditVideo(Long videoId, Integer status) {
+        Video video = videoRepository.selectById(videoId);
+        if (video == null) {
+            throw new RuntimeException("视频不存在");
+        }
+        video.setStatus(status);
+        videoRepository.updateById(video);
+    }
+
+    public List<VideoDTO> adminListVideos(int page, int size, Integer status) {
+        Page<Video> videoPage = new Page<>(page, size);
+        LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<>();
+        if (status != null) {
+            wrapper.eq(Video::getStatus, status);
+        }
+        wrapper.orderByDesc(Video::getCreatedAt);
+        Page<Video> result = videoRepository.selectPage(videoPage, wrapper);
+        return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
     private VideoDTO toDTO(Video video) {
         VideoDTO dto = new VideoDTO();
         BeanUtils.copyProperties(video, dto);

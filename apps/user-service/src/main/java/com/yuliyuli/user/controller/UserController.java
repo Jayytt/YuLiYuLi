@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -78,6 +79,30 @@ public class UserController {
         return ResponseEntity.ok(Map.of(
                 "code", 200,
                 "message", "退出成功",
+                "data", ""
+        ));
+    }
+
+    @GetMapping("/admin/list")
+    public ResponseEntity<Map<String, Object>> adminList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword) {
+        List<UserDTO> users = userService.adminListUsers(page, size, keyword);
+        return ResponseEntity.ok(Map.of(
+                "code", 200,
+                "message", "success",
+                "data", users
+        ));
+    }
+
+    @PostMapping("/admin/toggle-status")
+    public ResponseEntity<Map<String, Object>> toggleStatus(@RequestBody Map<String, Long> body) {
+        Long userId = body.get("userId");
+        userService.toggleUserStatus(userId);
+        return ResponseEntity.ok(Map.of(
+                "code", 200,
+                "message", "操作成功",
                 "data", ""
         ));
     }

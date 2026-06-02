@@ -21,5 +21,6 @@ public class VideoDTO {
     private Long userId;
     private String userName;
     private String userAvatar;
+    private Integer status;
     private LocalDateTime createdAt;
 }

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: yuliyuli-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./init/mysql:/docker-entrypoint-initdb.d
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - yuliyuli
+
+  redis:
+    image: redis:7-alpine
+    container_name: yuliyuli-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - yuliyuli
+
+  mongodb:
+    image: mongo:7
+    container_name: yuliyuli-mongodb
+    ports:
+      - "${MONGODB_PORT}:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    networks:
+      - yuliyuli
+
+  nacos:
+    image: nacos/nacos-server:v2.3.1
+    container_name: yuliyuli-nacos
+    environment:
+      MODE: standalone
+      NACOS_AUTH_ENABLE: 'true'
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_DB_NAME: nacos
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${NACOS_PORT}:8848"
+      - "9848:9848"
+    depends_on:
+      - mysql
+    networks:
+      - yuliyuli
+
+  elasticsearch:
+    image: elasticsearch:8.13.0
+    container_name: yuliyuli-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "${ELASTICSEARCH_PORT}:9200"
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - yuliyuli
+
+  rocketmq-namesrv:
+    image: apache/rocketmq:5.1.4
+    container_name: yuliyuli-rocketmq-namesrv
+    command: sh mqnamesrv
+    ports:
+      - "${ROCKETMQ_NAMESRV_PORT}:9876"
+    networks:
+      - yuliyuli
+
+  rocketmq-broker:
+    image: apache/rocketmq:5.1.4
+    container_name: yuliyuli-rocketmq-broker
+    command: sh mqbroker -n rocketmq-namesrv:9876 --enable-controller
+    ports:
+      - "10911:10911"
+    depends_on:
+      - rocketmq-namesrv
+    networks:
+      - yuliyuli
+
+networks:
+  yuliyuli:
+    driver: bridge

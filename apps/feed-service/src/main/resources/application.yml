@@ -1,0 +1,15 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: feed-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/yuliyuli_feed
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        username: nacos
+        password: nacos

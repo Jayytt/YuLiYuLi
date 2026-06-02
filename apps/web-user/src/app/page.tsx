@@ -1,33 +1,64 @@
-export default function Home() {
+import Header from '@/components/Header';
+import VideoCard from '@/components/VideoCard';
+
+async function getVideos() {
+  try {
+    const res = await fetch('http://localhost:8080/api/video/list?page=1&size=20', {
+      cache: 'no-store',
+    });
+    const data = await res.json();
+    return data.data || [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const videos = await getVideos();
+
   return (
     <div className="min-h-screen bg-bili-bg">
-      <header className="bg-white shadow-sm">
-        <div className="container-bili h-14 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-bili-pink text-xl font-bold">YuLiYuLi</h1>
-            <nav className="flex gap-4 text-sm">
-              <a href="#" className="hover:text-bili-pink">首页</a>
-              <a href="#" className="hover:text-bili-pink">动画</a>
-              <a href="#" className="hover:text-bili-pink">番剧</a>
-              <a href="#" className="hover:text-bili-pink">游戏</a>
-              <a href="#" className="hover:text-bili-pink">音乐</a>
-            </nav>
-          </div>
-          <div className="flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="搜索视频"
-              className="input-bili w-64"
-            />
-            <button className="btn-bili btn-bili-primary">登录</button>
-          </div>
+      <Header />
+      <main className="max-w-[1140px] mx-auto px-[10px] py-4">
+        {/* Category tabs */}
+        <div className="bg-white rounded-lg p-3 mb-4 flex gap-4 text-sm overflow-x-auto">
+          <span className="text-bili-pink font-medium whitespace-nowrap">推荐</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">动画</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">番剧</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">游戏</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">音乐</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">舞蹈</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">科技</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">生活</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">美食</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">鬼畜</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">时尚</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">娱乐</span>
+          <span className="text-bili-text hover:text-bili-pink cursor-pointer whitespace-nowrap">影视</span>
         </div>
-      </header>
-      <main className="container-bili py-4">
-        <div className="text-center py-20 text-bili-text-secondary">
-          <p className="text-lg">YuLiYuLi — B站风格视频平台</p>
-          <p className="mt-2">Phase 1 基础搭建完成</p>
-        </div>
+
+        {/* Video grid */}
+        {videos.length > 0 ? (
+          <div className="grid grid-cols-5 gap-4">
+            {videos.map((video: any) => (
+              <VideoCard
+                key={video.id}
+                id={video.id}
+                title={video.title}
+                coverUrl={video.coverUrl}
+                userName={video.userName}
+                viewCount={video.viewCount}
+                danmakuCount={video.danmakuCount}
+                duration={video.duration}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-bili-text-secondary">
+            <p className="text-lg">暂无视频</p>
+            <p className="mt-2 text-sm">启动后端服务并上传视频后，这里将显示视频列表</p>
+          </div>
+        )}
       </main>
     </div>
   );

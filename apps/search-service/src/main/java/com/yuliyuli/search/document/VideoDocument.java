@@ -17,10 +17,11 @@ public class VideoDocument {
     @Field(type = FieldType.Long)
     private Long videoId;
 
-    @Field(type = FieldType.Text, analyzer = "standard")
+    // TODO: Install IK Analyzer plugin for better Chinese text support, then set analyzer = "ik_max_word"
+    @Field(type = FieldType.Text)
     private String title;
 
-    @Field(type = FieldType.Text, analyzer = "standard")
+    @Field(type = FieldType.Text)
     private String description;
 
     @Field(type = FieldType.Keyword)

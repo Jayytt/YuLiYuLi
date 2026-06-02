@@ -13,7 +13,9 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +24,7 @@ public class SearchService {
     private final VideoSearchRepository videoSearchRepository;
     private final ElasticsearchOperations elasticsearchOperations;
 
-    public List<VideoSearchDTO> searchVideos(String keyword, int page, int size) {
+    public Map<String, Object> searchVideos(String keyword, int page, int size) {
         Query multiMatchQuery = MultiMatchQuery.of(m -> m
                 .query(keyword)
                 .fields("title^2", "description")
@@ -35,9 +37,19 @@ public class SearchService {
                 .build();
 
         SearchHits<VideoDocument> hits = elasticsearchOperations.search(query, VideoDocument.class);
-        return hits.getSearchHits().stream()
+        List<VideoSearchDTO> dtoList = hits.getSearchHits().stream()
                 .map(hit -> toDTO(hit.getContent()))
                 .collect(Collectors.toList());
+
+        long total = hits.getTotalHits();
+        int totalPages = (int) Math.ceil((double) total / size);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", dtoList);
+        result.put("total", total);
+        result.put("totalPages", totalPages);
+        result.put("currentPage", page);
+        return result;
     }
 
     public void indexVideo(VideoDocument videoDocument) {

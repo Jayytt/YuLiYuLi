@@ -1,6 +1,8 @@
 version: '3.8'
 
 services:
+  # ==================== Infrastructure ====================
+
   mysql:
     image: mysql:8.0
     container_name: yuliyuli-mysql
@@ -88,6 +90,373 @@ services:
       - "10911:10911"
     depends_on:
       - rocketmq-namesrv
+    networks:
+      - yuliyuli
+
+  # ==================== Java Microservices ====================
+
+  gateway:
+    build:
+      context: ../apps/gateway
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - nacos
+    networks:
+      - yuliyuli
+
+  user-service:
+    build:
+      context: ../apps/user-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-user-service
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_USER}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  video-service:
+    build:
+      context: ../apps/video-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-video-service
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_VIDEO}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
+      VIDEO_UPLOAD_DIR: ${VIDEO_UPLOAD_DIR}
+      VIDEO_COVER_DIR: ${VIDEO_COVER_DIR}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+      - rocketmq-namesrv
+    networks:
+      - yuliyuli
+
+  danmaku-service:
+    build:
+      context: ../apps/danmaku-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-danmaku-service
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI_DANMAKU}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
+    depends_on:
+      - mongodb
+      - redis
+      - nacos
+      - rocketmq-namesrv
+    networks:
+      - yuliyuli
+
+  comment-service:
+    build:
+      context: ../apps/comment-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-comment-service
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_COMMENT}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  search-service:
+    build:
+      context: ../apps/search-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-search-service
+    ports:
+      - "8085:8080"
+    environment:
+      SPRING_DATA_ELASTICSEARCH_URIS: ${SPRING_DATA_ELASTICSEARCH_URIS}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
+    depends_on:
+      - elasticsearch
+      - redis
+      - nacos
+      - rocketmq-namesrv
+    networks:
+      - yuliyuli
+
+  message-service:
+    build:
+      context: ../apps/message-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-message-service
+    ports:
+      - "8086:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_MESSAGE}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+      - rocketmq-namesrv
+    networks:
+      - yuliyuli
+
+  recommend-service:
+    build:
+      context: ../apps/recommend-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-recommend-service
+    ports:
+      - "8087:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI_RECOMMEND}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+    depends_on:
+      - mongodb
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  favorite-service:
+    build:
+      context: ../apps/favorite-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-favorite-service
+    ports:
+      - "8088:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_FAVORITE}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  follow-service:
+    build:
+      context: ../apps/follow-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-follow-service
+    ports:
+      - "8089:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_FOLLOW}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  feed-service:
+    build:
+      context: ../apps/feed-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-feed-service
+    ports:
+      - "8090:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI_FEED}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
+    depends_on:
+      - mongodb
+      - redis
+      - nacos
+      - rocketmq-namesrv
+    networks:
+      - yuliyuli
+
+  admin-service:
+    build:
+      context: ../apps/admin-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-admin-service
+    ports:
+      - "8091:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_ADMIN}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  config-service:
+    build:
+      context: ../apps/config-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-config-service
+    ports:
+      - "8092:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_CONFIG}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  statistics-service:
+    build:
+      context: ../apps/statistics-service
+      dockerfile: ../../docker/Dockerfile.java
+    container_name: yuliyuli-statistics-service
+    ports:
+      - "8093:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_STATISTICS}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
+      SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
+      SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+    depends_on:
+      - mysql
+      - redis
+      - nacos
+    networks:
+      - yuliyuli
+
+  # ==================== Frontend Applications ====================
+
+  web-user:
+    build:
+      context: ../apps/web-user
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: yuliyuli-web-user
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - gateway
+    networks:
+      - yuliyuli
+
+  web-admin:
+    build:
+      context: ../apps/web-admin
+      dockerfile: ../../docker/Dockerfile.node
+    container_name: yuliyuli-web-admin
+    ports:
+      - "3001:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - gateway
     networks:
       - yuliyuli
 

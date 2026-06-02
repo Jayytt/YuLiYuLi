@@ -8,6 +8,8 @@ import com.yuliyuli.video.dto.VideoUploadRequest;
 import com.yuliyuli.video.entity.Video;
 import com.yuliyuli.video.mq.TranscodingMessage;
 import com.yuliyuli.video.repository.VideoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +27,10 @@ public class VideoService {
     private final VideoRepository videoRepository;
     private final StringRedisTemplate redisTemplate;
     private final RocketMQTemplate rocketMQTemplate;
+    private final ObjectMapper objectMapper;
+
+    private static final String VIDEO_DETAIL_PREFIX = "video:detail:";
+    private static final long VIDEO_DETAIL_TTL_MINUTES = 10;
 
     public VideoDTO upload(VideoUploadRequest request, Long userId, String userName, String userAvatar) {
         Video video = new Video();
@@ -52,13 +59,42 @@ public class VideoService {
     }
 
     public VideoDTO getVideoById(Long videoId) {
+        // Check cache first
+        String cacheKey = VIDEO_DETAIL_PREFIX + videoId;
+        try {
+            String cached = redisTemplate.opsForValue().get(cacheKey);
+            if (cached != null) {
+                VideoDTO dto = objectMapper.readValue(cached, VideoDTO.class);
+                // Still increment view count asynchronously
+                Video video = videoRepository.selectById(videoId);
+                if (video != null) {
+                    video.setViewCount(video.getViewCount() + 1);
+                    videoRepository.updateById(video);
+                    dto.setViewCount(video.getViewCount());
+                }
+                return dto;
+            }
+        } catch (JsonProcessingException e) {
+            // Cache miss, fall through to DB
+        }
+
         Video video = videoRepository.selectById(videoId);
         if (video == null) {
             throw new RuntimeException("视频不存在");
         }
         video.setViewCount(video.getViewCount() + 1);
         videoRepository.updateById(video);
-        return toDTO(video);
+        VideoDTO dto = toDTO(video);
+
+        // Populate cache
+        try {
+            String json = objectMapper.writeValueAsString(dto);
+            redisTemplate.opsForValue().set(cacheKey, json, VIDEO_DETAIL_TTL_MINUTES, TimeUnit.MINUTES);
+        } catch (JsonProcessingException e) {
+            // Non-critical, skip caching
+        }
+
+        return dto;
     }
 
     public List<VideoDTO> listVideos(VideoQueryRequest request) {
@@ -100,6 +136,8 @@ public class VideoService {
         }
         video.setStatus(status);
         videoRepository.updateById(video);
+        // Invalidate cache
+        redisTemplate.delete(VIDEO_DETAIL_PREFIX + videoId);
     }
 
     public List<VideoDTO> adminListVideos(int page, int size, Integer status) {

@@ -3,6 +3,8 @@ package com.yuliyuli.user.service;
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuliyuli.user.config.JwtUtil;
 import com.yuliyuli.user.dto.*;
 import com.yuliyuli.user.entity.User;
@@ -22,8 +24,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final StringRedisTemplate redisTemplate;
+    private final ObjectMapper objectMapper;
 
     private static final String TOKEN_BLACKLIST_PREFIX = "token:blacklist:";
+    private static final String USER_INFO_PREFIX = "user:info:";
+    private static final long USER_INFO_TTL_MINUTES = 30;
 
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.selectOne(
@@ -59,11 +64,32 @@ public class UserService {
     }
 
     public UserDTO getUserById(Long userId) {
+        // Check cache first
+        String cacheKey = USER_INFO_PREFIX + userId;
+        try {
+            String cached = redisTemplate.opsForValue().get(cacheKey);
+            if (cached != null) {
+                return objectMapper.readValue(cached, UserDTO.class);
+            }
+        } catch (JsonProcessingException e) {
+            // Cache miss, fall through to DB
+        }
+
         User user = userRepository.selectById(userId);
         if (user == null) {
             throw new RuntimeException("用户不存在");
         }
-        return toDTO(user);
+        UserDTO dto = toDTO(user);
+
+        // Populate cache
+        try {
+            String json = objectMapper.writeValueAsString(dto);
+            redisTemplate.opsForValue().set(cacheKey, json, USER_INFO_TTL_MINUTES, TimeUnit.MINUTES);
+        } catch (JsonProcessingException e) {
+            // Non-critical, skip caching
+        }
+
+        return dto;
     }
 
     public void updateProfile(Long userId, UpdateProfileRequest request) {
@@ -79,6 +105,8 @@ public class UserService {
         if (request.getBirthday() != null) user.setBirthday(request.getBirthday());
 
         userRepository.updateById(user);
+        // Invalidate user info cache
+        redisTemplate.delete(USER_INFO_PREFIX + userId);
     }
 
     public void logout(String token) {

@@ -91,5 +91,6 @@
     <modules>
         <module>apps/gateway</module>
         <module>apps/user-service</module>
+        <module>apps/search-service</module>
     </modules>
 </project>

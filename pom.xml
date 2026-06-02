@@ -94,5 +94,6 @@
         <module>apps/search-service</module>
         <module>apps/admin-service</module>
         <module>apps/config-service</module>
+        <module>apps/statistics-service</module>
     </modules>
 </project>

@@ -30,6 +30,11 @@ spring:
         password: nacos
         file-extension: yml
 
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: video-service-group
+
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   configuration:

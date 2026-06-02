@@ -95,5 +95,6 @@
         <module>apps/admin-service</module>
         <module>apps/config-service</module>
         <module>apps/statistics-service</module>
+        <module>apps/video-service</module>
     </modules>
 </project>

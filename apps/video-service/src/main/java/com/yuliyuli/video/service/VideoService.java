@@ -6,8 +6,10 @@ import com.yuliyuli.video.dto.VideoDTO;
 import com.yuliyuli.video.dto.VideoQueryRequest;
 import com.yuliyuli.video.dto.VideoUploadRequest;
 import com.yuliyuli.video.entity.Video;
+import com.yuliyuli.video.mq.TranscodingMessage;
 import com.yuliyuli.video.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ public class VideoService {
 
     private final VideoRepository videoRepository;
     private final StringRedisTemplate redisTemplate;
+    private final RocketMQTemplate rocketMQTemplate;
 
     public VideoDTO upload(VideoUploadRequest request, Long userId, String userName, String userAvatar) {
         Video video = new Video();
@@ -30,7 +33,7 @@ public class VideoService {
         video.setUserId(userId);
         video.setUserName(userName);
         video.setUserAvatar(userAvatar);
-        video.setStatus(1);
+        video.setStatus(0);
         video.setViewCount(0L);
         video.setDanmakuCount(0L);
         video.setLikeCount(0L);
@@ -38,6 +41,13 @@ public class VideoService {
         video.setFavoriteCount(0L);
         video.setShareCount(0L);
         videoRepository.insert(video);
+
+        // Send transcoding message via RocketMQ
+        TranscodingMessage msg = new TranscodingMessage();
+        msg.setVideoId(video.getId());
+        msg.setFilePath(video.getVideoUrl());
+        rocketMQTemplate.convertAndSend("video-transcode", msg);
+
         return toDTO(video);
     }
 

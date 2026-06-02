@@ -9,13 +9,32 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@yuliyuli/shared": ["../../libs/shared/src/index.ts"],
-      "@yuliyuli/common-types": ["../../packages/common-types/src/index.ts"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@yuliyuli/shared": [
+        "../../libs/shared/src/index.ts"
+      ],
+      "@yuliyuli/common-types": [
+        "../../packages/common-types/src/index.ts"
+      ]
+    },
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

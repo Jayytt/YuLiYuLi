@@ -1,0 +1,69 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        username: nacos
+        password: nacos
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+        - id: video-service
+          uri: lb://video-service
+          predicates:
+            - Path=/api/video/**
+        - id: comment-service
+          uri: lb://comment-service
+          predicates:
+            - Path=/api/comment/**
+        - id: danmaku-service
+          uri: lb://danmaku-service
+          predicates:
+            - Path=/api/danmaku/**
+        - id: search-service
+          uri: lb://search-service
+          predicates:
+            - Path=/api/search/**
+        - id: message-service
+          uri: lb://message-service
+          predicates:
+            - Path=/api/message/**
+        - id: recommend-service
+          uri: lb://recommend-service
+          predicates:
+            - Path=/api/recommend/**
+        - id: favorite-service
+          uri: lb://favorite-service
+          predicates:
+            - Path=/api/favorite/**
+        - id: follow-service
+          uri: lb://follow-service
+          predicates:
+            - Path=/api/follow/**
+        - id: feed-service
+          uri: lb://feed-service
+          predicates:
+            - Path=/api/feed/**
+        - id: admin-service
+          uri: lb://admin-service
+          predicates:
+            - Path=/api/admin/**
+        - id: config-service
+          uri: lb://config-service
+          predicates:
+            - Path=/api/config/**
+        - id: statistics-service
+          uri: lb://statistics-service
+          predicates:
+            - Path=/api/statistics/**
+
+jwt:
+  secret: yuliyuli-jwt-secret-key-must-be-at-least-256-bits-long-for-hs256

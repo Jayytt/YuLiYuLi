@@ -1,0 +1,29 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/web-admin/src",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "web-admin:build",
+        "dev": true,
+        "port": 3001
+      },
+      "configurations": {
+        "development": { "buildTarget": "web-admin:build:development" },
+        "production": { "buildTarget": "web-admin:build:production", "dev": false }
+      }
+    },
+    "build": {
+      "executor": "@nx/next:build",
+      "defaultConfiguration": "production",
+      "options": {},
+      "configurations": {
+        "development": { "outputPath": "dist/apps/web-admin" },
+        "production": { "outputPath": "dist/apps/web-admin" }
+      }
+    }
+  }
+}

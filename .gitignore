@@ -1,0 +1,30 @@
+.superpowers/
+
+# Node
+node_modules/
+dist/
+.next/
+.vercel/
+*.tsbuildinfo
+
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# Java
+target/
+*.class
+*.jar
+*.war
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+docker/data/

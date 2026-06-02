@@ -22,9 +22,10 @@ CREATE TABLE t_site_config (
 
 CREATE TABLE t_sensitive_word (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    word VARCHAR(50) NOT NULL UNIQUE,
+    word VARCHAR(50) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    deleted TINYINT DEFAULT 0
+    deleted TINYINT DEFAULT 0,
+    UNIQUE KEY uk_word_deleted (word, deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Default site config

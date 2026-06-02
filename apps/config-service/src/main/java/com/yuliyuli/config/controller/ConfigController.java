@@ -82,7 +82,7 @@ public class ConfigController {
         ));
     }
 
-    @GetMapping("/sensitive-word/list")
+    @GetMapping("/sensitive-word")
     public ResponseEntity<Map<String, Object>> getSensitiveWords(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {

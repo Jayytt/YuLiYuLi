@@ -149,12 +149,17 @@ public class ConfigService {
      * Add sensitive word
      */
     public SensitiveWord addSensitiveWord(String word) {
-        Long count = sensitiveWordRepository.selectCount(
+        SensitiveWord existing = sensitiveWordRepository.selectOne(
                 new LambdaQueryWrapper<SensitiveWord>()
                         .eq(SensitiveWord::getWord, word)
         );
 
-        if (count > 0) {
+        if (existing != null) {
+            if (existing.getDeleted() == 1) {
+                existing.setDeleted(0);
+                sensitiveWordRepository.updateById(existing);
+                return existing;
+            }
             throw new RuntimeException("敏感词已存在");
         }
 

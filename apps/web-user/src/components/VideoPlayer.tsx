@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -9,10 +9,15 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({ videoUrl, poster }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [buffered, setBuffered] = useState(0);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -28,14 +33,45 @@ export default function VideoPlayer({ videoUrl, poster }: VideoPlayerProps) {
   const handleTimeUpdate = () => {
     if (videoRef.current) {
       setCurrentTime(videoRef.current.currentTime);
+      if (videoRef.current.buffered.length > 0) {
+        setBuffered(videoRef.current.buffered.end(videoRef.current.buffered.length - 1));
+      }
     }
   };
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
     if (videoRef.current) {
-      const time = parseFloat(e.target.value);
-      videoRef.current.currentTime = time;
-      setCurrentTime(time);
+      const rect = e.currentTarget.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      videoRef.current.currentTime = percent * duration;
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = parseFloat(e.target.value);
+    setVolume(v);
+    if (videoRef.current) {
+      videoRef.current.volume = v;
+      setIsMuted(v === 0);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (containerRef.current) {
+      if (!document.fullscreenElement) {
+        containerRef.current.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        document.exitFullscreen();
+        setIsFullscreen(false);
+      }
     }
   };
 
@@ -46,7 +82,13 @@ export default function VideoPlayer({ videoUrl, poster }: VideoPlayerProps) {
   };
 
   return (
-    <div className="relative bg-black rounded-lg overflow-hidden group">
+    <div
+      ref={containerRef}
+      className="relative bg-black group cursor-pointer"
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(isPlaying ? false : true)}
+      onClick={togglePlay}
+    >
       <video
         ref={videoRef}
         src={videoUrl}
@@ -54,38 +96,122 @@ export default function VideoPlayer({ videoUrl, poster }: VideoPlayerProps) {
         className="w-full aspect-video"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
-        onClick={togglePlay}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
       />
 
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-        <div className="flex items-center gap-3">
-          <button onClick={togglePlay} className="text-white text-lg">
-            {isPlaying ? '⏸' : '▶'}
-          </button>
-          <span className="text-white text-xs">{formatTime(currentTime)}</span>
-          <input
-            type="range"
-            min={0}
-            max={duration}
-            step={0.1}
-            value={currentTime}
-            onChange={handleSeek}
-            className="flex-1 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
+      {/* 中间播放按钮 */}
+      {!isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <path d="M8 4l16 10-16 10V4z" fill="white" />
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* 底部控制栏 */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-4 pb-2 pt-8 transition-opacity duration-300 ${
+          showControls ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* 进度条 */}
+        <div
+          className="relative h-[3px] bg-white/20 rounded-full cursor-pointer group/progress mb-2 hover:h-[5px] transition-all"
+          onClick={handleSeek}
+        >
+          {/* 缓冲 */}
+          <div
+            className="absolute top-0 left-0 h-full bg-white/30 rounded-full"
+            style={{ width: duration > 0 ? `${(buffered / duration) * 100}%` : '0%' }}
           />
-          <span className="text-white text-xs">{formatTime(duration)}</span>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={volume}
-            onChange={(e) => {
-              const v = parseFloat(e.target.value);
-              setVolume(v);
-              if (videoRef.current) videoRef.current.volume = v;
-            }}
-            className="w-16 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
+          {/* 已播放 */}
+          <div
+            className="absolute top-0 left-0 h-full bg-[#00a1d6] rounded-full"
+            style={{ width: duration > 0 ? `${(currentTime / duration) * 100}%` : '0%' }}
           />
+          {/* 拖拽点 */}
+          <div
+            className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#00a1d6] rounded-full opacity-0 group-hover/progress:opacity-100 transition-opacity"
+            style={{ left: duration > 0 ? `${(currentTime / duration) * 100}%` : '0%', marginLeft: '-6px' }}
+          />
+        </div>
+
+        {/* 控制按钮 */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* 播放/暂停 */}
+            <button onClick={togglePlay} className="text-white hover:text-[#00a1d6] transition-colors">
+              {isPlaying ? (
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <rect x="4" y="3" width="4" height="14" rx="1" fill="white" />
+                  <rect x="12" y="3" width="4" height="14" rx="1" fill="white" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M5 3l12 7-12 7V3z" fill="white" />
+                </svg>
+              )}
+            </button>
+
+            {/* 时间 */}
+            <span className="text-white text-[12px]">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* 音量 */}
+            <div className="flex items-center gap-1 group/vol">
+              <button onClick={toggleMute} className="text-white hover:text-[#00a1d6] transition-colors">
+                {isMuted || volume === 0 ? (
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M2 6.5h2.5L9 3v12l-4.5-3.5H2a1 1 0 01-1-1v-3a1 1 0 011-1z" fill="white" />
+                    <path d="M13 6l3 6M16 6l-3 6" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M2 6.5h2.5L9 3v12l-4.5-3.5H2a1 1 0 01-1-1v-3a1 1 0 011-1z" fill="white" />
+                    <path d="M12 5.5c1.3 1.2 2 2.8 2 4.5s-.7 3.3-2 4.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+                    <path d="M14 3.5c2 1.8 3 4.2 3 6.5s-1 4.7-3 6.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                )}
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={isMuted ? 0 : volume}
+                onChange={handleVolumeChange}
+                className="w-0 group-hover/vol:w-16 transition-all h-1 bg-white/30 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
+              />
+            </div>
+
+            {/* 弹幕开关 */}
+            <button className="text-white hover:text-[#00a1d6] transition-colors" title="弹幕">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <rect x="1" y="3" width="16" height="12" rx="2" stroke="white" strokeWidth="1.2" />
+                <path d="M4 7h6M4 10h10M7 13h4" stroke="white" strokeWidth="1" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            {/* 全屏 */}
+            <button onClick={toggleFullscreen} className="text-white hover:text-[#00a1d6] transition-colors" title="全屏">
+              {isFullscreen ? (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M6 2v4H2M12 2v4h4M6 16v-4H2M12 16v-4h4" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M2 6V2h4M12 2h4v4M16 12v4h-4M6 16H2v-4" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

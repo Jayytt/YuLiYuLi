@@ -4,12 +4,21 @@
 
 :root {
   --bg-primary: #ffffff;
-  --bg-secondary: #f4f4f4;
-  --text-primary: #212121;
-  --text-secondary: #999999;
+  --bg-secondary: #f1f2f3;
+  --bg-card: #ffffff;
+  --text-primary: #18191c;
+  --text-secondary: #9499a0;
+  --text-tertiary: #61666d;
   --brand-pink: #fb7299;
+  --brand-pink-hover: #f6688e;
   --brand-blue: #00a1d6;
+  --brand-blue-hover: #00b5e5;
   --border-color: #e3e5e7;
+  --link-color: #00a1d6;
+  --red: #f45c5c;
+  --orange: #ff6633;
+  --yellow: #ffb027;
+  --green: #4caf50;
 }
 
 * {
@@ -19,11 +28,13 @@
 }
 
 body {
-  font-family: 'HarmonyOS Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 a {
@@ -31,27 +42,34 @@ a {
   text-decoration: none;
 }
 
+img {
+  display: block;
+}
+
+/* ====== B站通用组件 ====== */
+
 .container-bili {
-  max-width: 1140px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 10px;
+  padding: 0 20px;
 }
 
 .card-bili {
-  background: var(--bg-primary);
+  background: var(--bg-card);
   border-radius: 6px;
   overflow: hidden;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.3s;
 }
 
 .card-bili:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .btn-bili {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   padding: 6px 16px;
   border-radius: 6px;
   font-size: 14px;
@@ -59,6 +77,7 @@ a {
   transition: all 0.2s;
   border: none;
   outline: none;
+  white-space: nowrap;
 }
 
 .btn-bili-primary {
@@ -67,7 +86,7 @@ a {
 }
 
 .btn-bili-primary:hover {
-  background-color: #e6638a;
+  background-color: var(--brand-pink-hover);
 }
 
 .btn-bili-secondary {
@@ -76,7 +95,18 @@ a {
 }
 
 .btn-bili-secondary:hover {
-  background-color: #008fc5;
+  background-color: var(--brand-blue-hover);
+}
+
+.btn-bili-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-bili-ghost:hover {
+  color: var(--brand-blue);
+  border-color: var(--brand-blue);
 }
 
 .input-bili {
@@ -86,11 +116,19 @@ a {
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .input-bili:focus {
   border-color: var(--brand-blue);
 }
+
+.input-bili::placeholder {
+  color: var(--text-secondary);
+}
+
+/* ====== 滚动条 ====== */
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -98,10 +136,21 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: #d1d2d3;
   border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c1c2c3;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* ====== 选中态 ====== */
+
+::selection {
+  background-color: var(--brand-pink);
+  color: white;
 }

@@ -91,17 +91,17 @@ public class StatisticsService {
      * Get hot search keywords from Redis sorted set
      */
     public List<Map<String, Object>> getHotSearchKeywords() {
-        Set<String> keywords = redisTemplate.opsForZSet().reverseRange(HOT_KEYWORDS_KEY, 0, 19);
-        if (keywords == null || keywords.isEmpty()) {
+        Set<org.springframework.data.redis.core.ZSetOperations.TypedTuple<String>> tuples =
+                redisTemplate.opsForZSet().reverseRangeWithScores(HOT_KEYWORDS_KEY, 0, 19);
+        if (tuples == null || tuples.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<Map<String, Object>> result = new ArrayList<>();
-        for (String keyword : keywords) {
-            Double score = redisTemplate.opsForZSet().score(HOT_KEYWORDS_KEY, keyword);
+        for (org.springframework.data.redis.core.ZSetOperations.TypedTuple<String> tuple : tuples) {
             Map<String, Object> item = new HashMap<>();
-            item.put("keyword", keyword);
-            item.put("count", score != null ? score.longValue() : 0L);
+            item.put("keyword", tuple.getValue());
+            item.put("count", tuple.getScore() != null ? tuple.getScore().longValue() : 0L);
             result.add(item);
         }
         return result;

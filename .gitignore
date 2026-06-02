@@ -1,5 +1,8 @@
 .superpowers/
 
+# IDE
+.idea/
+
 # Node
 node_modules/
 dist/

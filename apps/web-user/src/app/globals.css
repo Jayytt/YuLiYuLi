@@ -2,29 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ====== B站 Design Tokens ====== */
 :root {
+  /* 背景色 */
   --bg-primary: #ffffff;
-  --bg-secondary: #f1f2f3;
+  --bg-secondary: #f4f4f4;
   --bg-card: #ffffff;
+  --bg-hover: #e3e6e8;
+  --bg-active: #f1f2f3;
+  --bg-header: #ffffff;
+  --bg-mask: rgba(0, 0, 0, 0.5);
+
+  /* 文字色 */
   --text-primary: #18191c;
-  --text-secondary: #9499a0;
-  --text-tertiary: #61666d;
+  --text-secondary: #61666d;
+  --text-tertiary: #9499a0;
+  --text-disabled: #c9ccd0;
+
+  /* 品牌色 */
   --brand-pink: #fb7299;
   --brand-pink-hover: #f6688e;
+  --brand-pink-light: #fff0f5;
   --brand-blue: #00a1d6;
   --brand-blue-hover: #00b5e5;
+  --brand-blue-light: #e3f6fd;
+
+  /* 边框色 */
   --border-color: #e3e5e7;
-  --link-color: #00a1d6;
-  --red: #f45c5c;
-  --orange: #ff6633;
-  --yellow: #ffb027;
-  --green: #4caf50;
+  --border-hover: #c9ccd0;
+
+  /* 功能色 */
+  --color-red: #f45c5c;
+  --color-orange: #ff6633;
+  --color-yellow: #ffb027;
+  --color-green: #47a44b;
+
+  /* 阴影 */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-header: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  /* 尺寸 */
+  --header-height: 64px;
+  --max-width: 1400px;
+  --sidebar-width: 320px;
+
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* 过渡 */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.35s ease;
 }
 
-* {
+/* ====== Reset ====== */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -35,6 +82,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
 a {
@@ -44,40 +92,52 @@ a {
 
 img {
   display: block;
+  max-width: 100%;
 }
 
-/* ====== B站通用组件 ====== */
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
 
+input, textarea {
+  font-family: inherit;
+}
+
+/* ====== B站容器 ====== */
 .container-bili {
-  max-width: 1400px;
+  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 20px;
 }
 
+/* ====== B站卡片 ====== */
 .card-bili {
   background: var(--bg-card);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  transition: box-shadow 0.3s;
+  transition: box-shadow var(--transition-normal);
 }
 
 .card-bili:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card-hover);
 }
 
+/* ====== B站按钮 ====== */
 .btn-bili {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
   padding: 6px 16px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
   border: none;
   outline: none;
   white-space: nowrap;
+  user-select: none;
 }
 
 .btn-bili-primary {
@@ -109,13 +169,14 @@ img {
   border-color: var(--brand-blue);
 }
 
+/* ====== B站输入框 ====== */
 .input-bili {
   padding: 8px 12px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color var(--transition-fast);
   background: var(--bg-primary);
   color: var(--text-primary);
 }
@@ -125,11 +186,10 @@ img {
 }
 
 .input-bili::placeholder {
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
 }
 
-/* ====== 滚动条 ====== */
-
+/* ====== B站滚动条 ====== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -149,8 +209,125 @@ img {
 }
 
 /* ====== 选中态 ====== */
-
 ::selection {
   background-color: var(--brand-pink);
   color: white;
+}
+
+/* ====== B站视频卡片缩略图比例 ====== */
+.bili-thumbnail {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  background-color: #e3e5e7;
+}
+
+/* ====== B站文字截断 ====== */
+.bili-line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bili-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ====== B站动画 ====== */
+@keyframes bili-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bili-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bili-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-bili-fade-in {
+  animation: bili-fade-in 0.3s ease forwards;
+}
+
+.animate-bili-slide-up {
+  animation: bili-slide-up 0.4s ease forwards;
+}
+
+/* ====== B站弹幕 ====== */
+@keyframes danmaku-scroll {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+
+/* ====== B站操作按钮 ====== */
+.bili-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.bili-action-btn:hover {
+  background-color: var(--bg-active);
+  color: var(--text-primary);
+}
+
+.bili-action-btn.active {
+  color: var(--brand-blue);
+}
+
+/* ====== B站标签/徽章 ====== */
+.bili-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.bili-badge-pink {
+  background-color: var(--brand-pink);
+  color: white;
+}
+
+.bili-badge-blue {
+  background-color: var(--brand-blue);
+  color: white;
+}
+
+.bili-badge-ghost {
+  background-color: var(--bg-active);
+  color: var(--text-secondary);
+}
+
+/* ====== 隐藏滚动条 ====== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

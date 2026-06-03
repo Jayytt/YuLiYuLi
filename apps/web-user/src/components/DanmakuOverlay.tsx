@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface Danmaku {
   id: string;
@@ -18,6 +18,7 @@ interface DanmakuOverlayProps {
 export default function DanmakuOverlay({ videoId, currentTime }: DanmakuOverlayProps) {
   const [danmakus, setDanmakus] = useState<Danmaku[]>([]);
   const [visibleDanmakus, setVisibleDanmakus] = useState<Danmaku[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch(`/api/danmaku/list/${videoId}`)
@@ -39,27 +40,28 @@ export default function DanmakuOverlay({ videoId, currentTime }: DanmakuOverlayP
   };
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div
+      ref={containerRef}
+      className="absolute inset-0 pointer-events-none overflow-hidden z-10"
+    >
       {visibleDanmakus.map((danmaku, index) => (
         <div
           key={danmaku.id}
-          className="absolute whitespace-nowrap text-lg font-bold"
+          className="absolute whitespace-nowrap"
           style={{
             color: getColorHex(danmaku.color),
-            top: `${(index * 30) % 300}px`,
+            top: `${(index * 32) % 280}px`,
+            fontSize: '16px',
+            fontWeight: '500',
+            lineHeight: '1.4',
+            textShadow: '1px 1px 2px rgba(0,0,0,0.6), -1px -1px 2px rgba(0,0,0,0.3)',
             animation: 'danmaku-scroll 8s linear forwards',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+            willChange: 'transform',
           }}
         >
           {danmaku.content}
         </div>
       ))}
-      <style jsx>{`
-        @keyframes danmaku-scroll {
-          from { transform: translateX(100%); }
-          to { transform: translateX(-100%); }
-        }
-      `}</style>
     </div>
   );
 }

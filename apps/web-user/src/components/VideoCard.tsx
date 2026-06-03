@@ -45,7 +45,7 @@ export default function VideoCard({ id, title, coverUrl, userName, viewCount, da
   return (
     <Link href={`/video/${id}`} className="group block">
       {/* 缩略图 */}
-      <div className="relative aspect-[10/6] bg-[#f1f2f3] rounded-[6px] overflow-hidden">
+      <div className="bili-thumbnail">
         {coverUrl ? (
           <img
             src={coverUrl}
@@ -54,51 +54,59 @@ export default function VideoCard({ id, title, coverUrl, userName, viewCount, da
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#e3e5e7]">
+          <div className="w-full h-full flex items-center justify-center" style={{ background: 'var(--bg-active)' }}>
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="4" y="8" width="32" height="24" rx="2" stroke="#c9ccd0" strokeWidth="1.5" />
-              <circle cx="14" cy="16" r="2" fill="#c9ccd0" />
-              <path d="M4 26l8-6 4 3 8-8 12 10" stroke="#c9ccd0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <rect x="4" y="8" width="32" height="24" rx="2" stroke="var(--text-disabled)" strokeWidth="1.5" />
+              <circle cx="14" cy="16" r="2" fill="var(--text-disabled)" />
+              <path d="M4 26l8-6 4 3 8-8 12 10" stroke="var(--text-disabled)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
         )}
         {/* 时长 */}
         {duration > 0 && (
-          <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[12px] px-1.5 py-[1px] rounded leading-[18px]">
+          <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[12px] px-1.5 py-[1px] rounded-sm leading-[18px] backdrop-blur-sm">
             {formatDuration(duration)}
           </span>
         )}
-        {/* hover 遮罩 */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+        {/* 底部渐变遮罩 */}
+        <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* 播放按钮 hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M6 3l12 7-12 7V3z" fill="white" />
+            </svg>
+          </div>
+        </div>
       </div>
 
       {/* 信息区 */}
       <div className="mt-2 px-[2px]">
         {/* 标题 */}
-        <h3 className="text-[15px] leading-[22px] text-[#18191c] line-clamp-2 group-hover:text-[#00a1d6] transition-colors font-medium">
+        <h3 className="text-[14px] leading-[20px] text-[var(--text-primary)] bili-line-clamp-2 group-hover:text-[var(--brand-blue)] transition-colors font-medium">
           {title}
         </h3>
         {/* 底部信息: UP主 + 播放量 */}
         <div className="mt-[6px] flex items-center justify-between">
-          <div className="flex items-center gap-1 min-w-0">
-            {/* UP主头像占位 */}
-            <div className="w-5 h-5 rounded-full bg-[#e3e5e7] flex-shrink-0 flex items-center justify-center">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <circle cx="6" cy="4.5" r="2" stroke="#c9ccd0" strokeWidth="0.8" />
-                <path d="M2 11c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#c9ccd0" strokeWidth="0.8" strokeLinecap="round" />
+          <div className="flex items-center gap-1.5 min-w-0">
+            {/* UP主头像 */}
+            <div className="w-[18px] h-[18px] rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden" style={{ background: 'var(--bg-active)' }}>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <circle cx="5" cy="3.5" r="1.8" stroke="var(--text-disabled)" strokeWidth="0.6" />
+                <path d="M1.5 9c0-2 1.5-3.5 3.5-3.5s3.5 1.5 3.5 3.5" stroke="var(--text-disabled)" strokeWidth="0.6" strokeLinecap="round" />
               </svg>
             </div>
-            <span className="text-[12px] text-[#9499a0] truncate">{userName}</span>
+            <span className="text-[12px] text-[var(--text-tertiary)] truncate">{userName}</span>
           </div>
-          <div className="flex items-center gap-1 text-[12px] text-[#9499a0] flex-shrink-0">
+          <div className="flex items-center gap-1 text-[12px] text-[var(--text-tertiary)] flex-shrink-0">
             {/* 播放图标 */}
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M3 2.5l7 3.5-7 3.5V2.5z" fill="#c9ccd0" />
+              <path d="M3 2.5l7 3.5-7 3.5V2.5z" fill="var(--text-disabled)" />
             </svg>
             <span>{formatCount(viewCount)}</span>
             {danmakuCount > 0 && (
               <>
-                <span className="text-[#e3e5e7] mx-0.5">·</span>
+                <span className="text-[var(--border-color)] mx-0.5">·</span>
                 <span>{formatCount(danmakuCount)}弹幕</span>
               </>
             )}

@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuliyuli.config.entity.Banner;
 import com.yuliyuli.config.entity.SiteConfig;
 import com.yuliyuli.config.entity.SensitiveWord;
-import com.yuliyuli.config.repository.BannerRepository;
-import com.yuliyuli.config.repository.SiteConfigRepository;
-import com.yuliyuli.config.repository.SensitiveWordRepository;
+import com.yuliyuli.config.mapper.BannerMapper;
+import com.yuliyuli.config.mapper.SiteConfigMapper;
+import com.yuliyuli.config.mapper.SensitiveWordMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ConfigService {
 
-    private final BannerRepository bannerRepository;
-    private final SiteConfigRepository siteConfigRepository;
-    private final SensitiveWordRepository sensitiveWordRepository;
+    private final BannerMapper bannerMapper;
+    private final SiteConfigMapper siteConfigMapper;
+    private final SensitiveWordMapper sensitiveWordMapper;
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
 
@@ -47,7 +47,7 @@ public class ConfigService {
             }
         }
 
-        List<Banner> banners = bannerRepository.selectList(
+        List<Banner> banners = bannerMapper.selectList(
                 new LambdaQueryWrapper<Banner>()
                         .eq(Banner::getStatus, 1)
                         .orderByAsc(Banner::getSortOrder)
@@ -68,7 +68,7 @@ public class ConfigService {
      * Create banner
      */
     public Banner createBanner(Banner banner) {
-        bannerRepository.insert(banner);
+        bannerMapper.insert(banner);
         invalidateBannerCache();
         return banner;
     }
@@ -77,27 +77,27 @@ public class ConfigService {
      * Update banner
      */
     public Banner updateBanner(Long id, Banner banner) {
-        Banner existing = bannerRepository.selectById(id);
+        Banner existing = bannerMapper.selectById(id);
         if (existing == null) {
             throw new RuntimeException("Banner不存在");
         }
 
         banner.setId(id);
-        bannerRepository.updateById(banner);
+        bannerMapper.updateById(banner);
         invalidateBannerCache();
-        return bannerRepository.selectById(id);
+        return bannerMapper.selectById(id);
     }
 
     /**
      * Delete banner
      */
     public void deleteBanner(Long id) {
-        Banner existing = bannerRepository.selectById(id);
+        Banner existing = bannerMapper.selectById(id);
         if (existing == null) {
             throw new RuntimeException("Banner不存在");
         }
 
-        bannerRepository.deleteById(id);
+        bannerMapper.deleteById(id);
         invalidateBannerCache();
     }
 
@@ -105,7 +105,7 @@ public class ConfigService {
      * Get site config as key-value map
      */
     public Map<String, String> getSiteConfig() {
-        List<SiteConfig> configs = siteConfigRepository.selectList(null);
+        List<SiteConfig> configs = siteConfigMapper.selectList(null);
         return configs.stream()
                 .collect(Collectors.toMap(SiteConfig::getConfigKey, SiteConfig::getConfigValue));
     }
@@ -114,7 +114,7 @@ public class ConfigService {
      * Update site config value by key
      */
     public void updateSiteConfig(String key, String value) {
-        SiteConfig config = siteConfigRepository.selectOne(
+        SiteConfig config = siteConfigMapper.selectOne(
                 new LambdaQueryWrapper<SiteConfig>()
                         .eq(SiteConfig::getConfigKey, key)
         );
@@ -124,7 +124,7 @@ public class ConfigService {
         }
 
         config.setConfigValue(value);
-        siteConfigRepository.updateById(config);
+        siteConfigMapper.updateById(config);
     }
 
     /**
@@ -135,7 +135,7 @@ public class ConfigService {
         LambdaQueryWrapper<SensitiveWord> wrapper = new LambdaQueryWrapper<SensitiveWord>()
                 .orderByDesc(SensitiveWord::getCreatedAt);
 
-        Page<SensitiveWord> result = sensitiveWordRepository.selectPage(wordPage, wrapper);
+        Page<SensitiveWord> result = sensitiveWordMapper.selectPage(wordPage, wrapper);
 
         return Map.of(
                 "records", result.getRecords(),
@@ -149,7 +149,7 @@ public class ConfigService {
      * Add sensitive word
      */
     public SensitiveWord addSensitiveWord(String word) {
-        SensitiveWord existing = sensitiveWordRepository.selectOne(
+        SensitiveWord existing = sensitiveWordMapper.selectOne(
                 new LambdaQueryWrapper<SensitiveWord>()
                         .eq(SensitiveWord::getWord, word)
         );
@@ -157,7 +157,7 @@ public class ConfigService {
         if (existing != null) {
             if (existing.getDeleted() == 1) {
                 existing.setDeleted(0);
-                sensitiveWordRepository.updateById(existing);
+                sensitiveWordMapper.updateById(existing);
                 return existing;
             }
             throw new RuntimeException("敏感词已存在");
@@ -165,7 +165,7 @@ public class ConfigService {
 
         SensitiveWord sensitiveWord = new SensitiveWord();
         sensitiveWord.setWord(word);
-        sensitiveWordRepository.insert(sensitiveWord);
+        sensitiveWordMapper.insert(sensitiveWord);
         return sensitiveWord;
     }
 
@@ -173,12 +173,12 @@ public class ConfigService {
      * Delete sensitive word
      */
     public void deleteSensitiveWord(Long id) {
-        SensitiveWord existing = sensitiveWordRepository.selectById(id);
+        SensitiveWord existing = sensitiveWordMapper.selectById(id);
         if (existing == null) {
             throw new RuntimeException("敏感词不存在");
         }
 
-        sensitiveWordRepository.deleteById(id);
+        sensitiveWordMapper.deleteById(id);
     }
 
     private void invalidateBannerCache() {

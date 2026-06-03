@@ -1,9 +1,9 @@
-package com.yuliyuli.config.repository;
+package com.yuliyuli.config.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yuliyuli.config.entity.Banner;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface BannerRepository extends BaseMapper<Banner> {
+public interface BannerMapper extends BaseMapper<Banner> {
 }

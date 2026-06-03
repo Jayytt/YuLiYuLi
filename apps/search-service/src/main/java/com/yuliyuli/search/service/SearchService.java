@@ -4,7 +4,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import com.yuliyuli.search.document.VideoDocument;
 import com.yuliyuli.search.dto.VideoSearchDTO;
-import com.yuliyuli.search.repository.VideoSearchRepository;
+import com.yuliyuli.search.mapper.VideoSearchMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SearchService {
-    private final VideoSearchRepository videoSearchRepository;
+    private final VideoSearchMapper videoSearchMapper;
     private final ElasticsearchOperations elasticsearchOperations;
 
     public Map<String, Object> searchVideos(String keyword, int page, int size) {
@@ -53,7 +53,7 @@ public class SearchService {
     }
 
     public void indexVideo(VideoDocument videoDocument) {
-        videoSearchRepository.save(videoDocument);
+        videoSearchMapper.save(videoDocument);
     }
 
     public List<String> getSearchSuggestions(String keyword) {

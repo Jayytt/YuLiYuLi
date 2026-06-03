@@ -3,8 +3,8 @@ package com.yuliyuli.statistics.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yuliyuli.statistics.entity.CategoryStats;
 import com.yuliyuli.statistics.entity.DailyStats;
-import com.yuliyuli.statistics.repository.CategoryStatsRepository;
-import com.yuliyuli.statistics.repository.DailyStatsRepository;
+import com.yuliyuli.statistics.mapper.CategoryStatsMapper;
+import com.yuliyuli.statistics.mapper.DailyStatsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StatisticsService {
 
-    private final DailyStatsRepository dailyStatsRepository;
-    private final CategoryStatsRepository categoryStatsRepository;
+    private final DailyStatsMapper dailyStatsMapper;
+    private final CategoryStatsMapper categoryStatsMapper;
     private final StringRedisTemplate redisTemplate;
 
     private static final String HOT_KEYWORDS_KEY = "search:hot:keywords";
@@ -28,7 +28,7 @@ public class StatisticsService {
      */
     public DailyStats getDashboard() {
         LocalDate today = LocalDate.now();
-        DailyStats stats = dailyStatsRepository.selectOne(
+        DailyStats stats = dailyStatsMapper.selectOne(
                 new LambdaQueryWrapper<DailyStats>()
                         .eq(DailyStats::getStatDate, today)
         );
@@ -49,7 +49,7 @@ public class StatisticsService {
      */
     public List<DailyStats> getUserGrowthChart(int days) {
         LocalDate startDate = LocalDate.now().minusDays(days - 1);
-        List<DailyStats> statsList = dailyStatsRepository.selectList(
+        List<DailyStats> statsList = dailyStatsMapper.selectList(
                 new LambdaQueryWrapper<DailyStats>()
                         .ge(DailyStats::getStatDate, startDate)
                         .orderByAsc(DailyStats::getStatDate)
@@ -80,7 +80,7 @@ public class StatisticsService {
      */
     public List<CategoryStats> getCategoryRanking() {
         LocalDate today = LocalDate.now();
-        return categoryStatsRepository.selectList(
+        return categoryStatsMapper.selectList(
                 new LambdaQueryWrapper<CategoryStats>()
                         .eq(CategoryStats::getStatDate, today)
                         .orderByDesc(CategoryStats::getViewCount)

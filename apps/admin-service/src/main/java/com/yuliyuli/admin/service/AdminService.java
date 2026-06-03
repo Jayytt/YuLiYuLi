@@ -7,8 +7,8 @@ import com.yuliyuli.admin.config.JwtUtil;
 import com.yuliyuli.admin.dto.*;
 import com.yuliyuli.admin.entity.AdminUser;
 import com.yuliyuli.admin.entity.Report;
-import com.yuliyuli.admin.repository.AdminUserRepository;
-import com.yuliyuli.admin.repository.ReportRepository;
+import com.yuliyuli.admin.mapper.AdminUserMapper;
+import com.yuliyuli.admin.mapper.ReportMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -24,8 +24,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminService {
 
-    private final AdminUserRepository adminUserRepository;
-    private final ReportRepository reportRepository;
+    private final AdminUserMapper adminUserMapper;
+    private final ReportMapper reportMapper;
     private final JwtUtil jwtUtil;
     private final RestTemplate restTemplate;
 
@@ -33,7 +33,7 @@ public class AdminService {
      * Admin JWT login
      */
     public AdminLoginResponse adminLogin(String username, String password) {
-        AdminUser admin = adminUserRepository.selectOne(
+        AdminUser admin = adminUserMapper.selectOne(
                 new LambdaQueryWrapper<AdminUser>()
                         .eq(AdminUser::getUsername, username)
         );
@@ -153,7 +153,7 @@ public class AdminService {
         }
         wrapper.orderByDesc(Report::getCreatedAt);
 
-        Page<Report> result = reportRepository.selectPage(reportPage, wrapper);
+        Page<Report> result = reportMapper.selectPage(reportPage, wrapper);
 
         return Map.of(
                 "records", result.getRecords(),
@@ -167,7 +167,7 @@ public class AdminService {
      * Process a report
      */
     public void handleReport(Long reportId, Integer status, Long handlerId, String note) {
-        Report report = reportRepository.selectById(reportId);
+        Report report = reportMapper.selectById(reportId);
         if (report == null) {
             throw new RuntimeException("举报不存在");
         }
@@ -181,7 +181,7 @@ public class AdminService {
         report.setHandleNote(note != null ? note : "");
         report.setHandledAt(LocalDateTime.now());
 
-        reportRepository.updateById(report);
+        reportMapper.updateById(report);
     }
 
     private AdminUserDTO toAdminUserDTO(AdminUser admin) {

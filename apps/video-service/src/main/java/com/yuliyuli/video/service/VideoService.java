@@ -7,7 +7,7 @@ import com.yuliyuli.video.dto.VideoQueryRequest;
 import com.yuliyuli.video.dto.VideoUploadRequest;
 import com.yuliyuli.video.entity.Video;
 import com.yuliyuli.video.mq.TranscodingMessage;
-import com.yuliyuli.video.repository.VideoRepository;
+import com.yuliyuli.video.mapper.VideoMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VideoService {
 
-    private final VideoRepository videoRepository;
+    private final VideoMapper videoMapper;
     private final StringRedisTemplate redisTemplate;
     private final RocketMQTemplate rocketMQTemplate;
     private final ObjectMapper objectMapper;
@@ -47,7 +47,7 @@ public class VideoService {
         video.setCoinCount(0L);
         video.setFavoriteCount(0L);
         video.setShareCount(0L);
-        videoRepository.insert(video);
+        videoMapper.insert(video);
 
         // Send transcoding message via RocketMQ
         TranscodingMessage msg = new TranscodingMessage();
@@ -66,10 +66,10 @@ public class VideoService {
             if (cached != null) {
                 VideoDTO dto = objectMapper.readValue(cached, VideoDTO.class);
                 // Still increment view count asynchronously
-                Video video = videoRepository.selectById(videoId);
+                Video video = videoMapper.selectById(videoId);
                 if (video != null) {
                     video.setViewCount(video.getViewCount() + 1);
-                    videoRepository.updateById(video);
+                    videoMapper.updateById(video);
                     dto.setViewCount(video.getViewCount());
                 }
                 return dto;
@@ -78,12 +78,12 @@ public class VideoService {
             // Cache miss, fall through to DB
         }
 
-        Video video = videoRepository.selectById(videoId);
+        Video video = videoMapper.selectById(videoId);
         if (video == null) {
             throw new RuntimeException("视频不存在");
         }
         video.setViewCount(video.getViewCount() + 1);
-        videoRepository.updateById(video);
+        videoMapper.updateById(video);
         VideoDTO dto = toDTO(video);
 
         // Populate cache
@@ -115,12 +115,12 @@ public class VideoService {
             wrapper.orderByDesc(Video::getCreatedAt);
         }
 
-        Page<Video> result = videoRepository.selectPage(page, wrapper);
+        Page<Video> result = videoMapper.selectPage(page, wrapper);
         return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public List<VideoDTO> getUserVideos(Long userId) {
-        List<Video> videos = videoRepository.selectList(
+        List<Video> videos = videoMapper.selectList(
                 new LambdaQueryWrapper<Video>()
                         .eq(Video::getUserId, userId)
                         .eq(Video::getStatus, 1)
@@ -130,12 +130,12 @@ public class VideoService {
     }
 
     public void auditVideo(Long videoId, Integer status) {
-        Video video = videoRepository.selectById(videoId);
+        Video video = videoMapper.selectById(videoId);
         if (video == null) {
             throw new RuntimeException("视频不存在");
         }
         video.setStatus(status);
-        videoRepository.updateById(video);
+        videoMapper.updateById(video);
         // Invalidate cache
         redisTemplate.delete(VIDEO_DETAIL_PREFIX + videoId);
     }
@@ -147,7 +147,7 @@ public class VideoService {
             wrapper.eq(Video::getStatus, status);
         }
         wrapper.orderByDesc(Video::getCreatedAt);
-        Page<Video> result = videoRepository.selectPage(videoPage, wrapper);
+        Page<Video> result = videoMapper.selectPage(videoPage, wrapper);
         return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
     }
 

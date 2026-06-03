@@ -1,9 +1,9 @@
-package com.yuliyuli.admin.repository;
+package com.yuliyuli.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yuliyuli.admin.entity.Report;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface ReportRepository extends BaseMapper<Report> {
+public interface ReportMapper extends BaseMapper<Report> {
 }

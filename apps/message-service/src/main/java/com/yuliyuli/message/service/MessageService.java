@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yuliyuli.message.dto.MessageDTO;
 import com.yuliyuli.message.dto.MessageSendRequest;
 import com.yuliyuli.message.entity.Message;
-import com.yuliyuli.message.repository.MessageRepository;
+import com.yuliyuli.message.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MessageService {
-    private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
     private final StringRedisTemplate redisTemplate;
 
     private static final String UNREAD_COUNT_KEY = "message:unread:";
@@ -33,7 +33,7 @@ public class MessageService {
         message.setType(0);
         message.setIsRead(0);
         message.setCreatedAt(LocalDateTime.now());
-        messageRepository.insert(message);
+        messageMapper.insert(message);
         return toDTO(message);
     }
 
@@ -45,7 +45,7 @@ public class MessageService {
         message.setType(1);
         message.setIsRead(0);
         message.setCreatedAt(LocalDateTime.now());
-        messageRepository.insert(message);
+        messageMapper.insert(message);
         clearUnreadCountCache(receiverId);
         return toDTO(message);
     }
@@ -64,17 +64,17 @@ public class MessageService {
         LambdaQueryWrapper<Message> wrapper = new LambdaQueryWrapper<Message>()
                 .eq(Message::getReceiverId, userId)
                 .orderByDesc(Message::getCreatedAt);
-        List<Message> messages = messageRepository.selectPage(new Page<>(page, size), wrapper).getRecords();
+        List<Message> messages = messageMapper.selectPage(new Page<>(page, size), wrapper).getRecords();
         return messages.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public void markAsRead(Long messageId) {
-        Message message = messageRepository.selectById(messageId);
+        Message message = messageMapper.selectById(messageId);
         if (message == null) {
             throw new RuntimeException("Message not found");
         }
         message.setIsRead(1);
-        messageRepository.updateById(message);
+        messageMapper.updateById(message);
         clearUnreadCountCache(message.getReceiverId());
     }
 
@@ -84,7 +84,7 @@ public class MessageService {
         if (cached != null) {
             return Long.parseLong(cached);
         }
-        long count = messageRepository.selectCount(
+        long count = messageMapper.selectCount(
                 new LambdaQueryWrapper<Message>()
                         .eq(Message::getReceiverId, userId)
                         .eq(Message::getIsRead, 0)

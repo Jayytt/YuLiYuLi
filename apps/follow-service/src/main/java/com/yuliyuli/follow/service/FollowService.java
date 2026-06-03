@@ -3,7 +3,7 @@ package com.yuliyuli.follow.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yuliyuli.follow.dto.FollowDTO;
 import com.yuliyuli.follow.entity.Follow;
-import com.yuliyuli.follow.repository.FollowRepository;
+import com.yuliyuli.follow.mapper.FollowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FollowService {
-    private final FollowRepository followRepository;
+    private final FollowMapper followMapper;
 
     public void follow(Long userId, Long followUserId) {
         if (userId.equals(followUserId)) {
             throw new RuntimeException("不能关注自己");
         }
-        Long count = followRepository.selectCount(
+        Long count = followMapper.selectCount(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getUserId, userId)
                         .eq(Follow::getFollowUserId, followUserId)
@@ -33,11 +33,11 @@ public class FollowService {
         follow.setUserId(userId);
         follow.setFollowUserId(followUserId);
         follow.setCreatedAt(LocalDateTime.now());
-        followRepository.insert(follow);
+        followMapper.insert(follow);
     }
 
     public void unfollow(Long userId, Long followUserId) {
-        followRepository.delete(
+        followMapper.delete(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getUserId, userId)
                         .eq(Follow::getFollowUserId, followUserId)
@@ -45,7 +45,7 @@ public class FollowService {
     }
 
     public boolean isFollowing(Long userId, Long followUserId) {
-        Long count = followRepository.selectCount(
+        Long count = followMapper.selectCount(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getUserId, userId)
                         .eq(Follow::getFollowUserId, followUserId)
@@ -54,7 +54,7 @@ public class FollowService {
     }
 
     public List<FollowDTO> getFollowing(Long userId) {
-        List<Follow> follows = followRepository.selectList(
+        List<Follow> follows = followMapper.selectList(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getUserId, userId)
                         .orderByDesc(Follow::getCreatedAt)
@@ -63,7 +63,7 @@ public class FollowService {
     }
 
     public List<FollowDTO> getFollowers(Long userId) {
-        List<Follow> follows = followRepository.selectList(
+        List<Follow> follows = followMapper.selectList(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getFollowUserId, userId)
                         .orderByDesc(Follow::getCreatedAt)
@@ -72,14 +72,14 @@ public class FollowService {
     }
 
     public long getFollowingCount(Long userId) {
-        return followRepository.selectCount(
+        return followMapper.selectCount(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getUserId, userId)
         );
     }
 
     public long getFollowerCount(Long userId) {
-        return followRepository.selectCount(
+        return followMapper.selectCount(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getFollowUserId, userId)
         );

@@ -1,9 +1,9 @@
-package com.yuliyuli.admin.repository;
+package com.yuliyuli.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yuliyuli.admin.entity.AdminUser;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface AdminUserRepository extends BaseMapper<AdminUser> {
+public interface AdminUserMapper extends BaseMapper<AdminUser> {
 }

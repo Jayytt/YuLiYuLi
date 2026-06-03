@@ -1,7 +1,7 @@
 package com.yuliyuli.video.service;
 
 import com.yuliyuli.video.entity.Video;
-import com.yuliyuli.video.repository.VideoRepository;
+import com.yuliyuli.video.mapper.VideoMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class TranscodingService {
-    private final VideoRepository videoRepository;
+    private final VideoMapper videoMapper;
 
     @Value("${video.upload-dir:./uploads/videos}")
     private String videoDir;
@@ -20,12 +20,12 @@ public class TranscodingService {
     private String coverDir;
 
     public void transcode(Long videoId, String originalPath) {
-        Video video = videoRepository.selectById(videoId);
+        Video video = videoMapper.selectById(videoId);
         if (video == null) return;
 
         // Update status to "transcoding" (status=3)
         video.setStatus(3);
-        videoRepository.updateById(video);
+        videoMapper.updateById(video);
 
         try {
             // Transcode to multiple resolutions
@@ -42,13 +42,13 @@ public class TranscodingService {
             // Update video record
             video.setCoverUrl(thumbnailPath);
             video.setStatus(1); // published
-            videoRepository.updateById(video);
+            videoMapper.updateById(video);
 
             log.info("Video {} transcoded successfully", videoId);
         } catch (Exception e) {
             log.error("Transcoding failed for video {}: {}", videoId, e.getMessage());
             video.setStatus(2); // rejected/failed
-            videoRepository.updateById(video);
+            videoMapper.updateById(video);
         }
     }
 

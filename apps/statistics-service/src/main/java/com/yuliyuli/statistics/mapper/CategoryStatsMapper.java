@@ -1,9 +1,9 @@
-package com.yuliyuli.statistics.repository;
+package com.yuliyuli.statistics.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yuliyuli.statistics.entity.CategoryStats;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface CategoryStatsRepository extends BaseMapper<CategoryStats> {
+public interface CategoryStatsMapper extends BaseMapper<CategoryStats> {
 }

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yuliyuli.comment.dto.CommentDTO;
 import com.yuliyuli.comment.dto.CommentSendRequest;
 import com.yuliyuli.comment.entity.Comment;
-import com.yuliyuli.comment.repository.CommentRepository;
+import com.yuliyuli.comment.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
     public CommentDTO send(CommentSendRequest request, Long userId, String userName, String userAvatar) {
         Comment comment = new Comment();
@@ -32,19 +32,19 @@ public class CommentService {
         comment.setReplyUserName(request.getReplyUserName());
         comment.setLikeCount(0L);
         comment.setCreatedAt(LocalDateTime.now());
-        commentRepository.insert(comment);
+        commentMapper.insert(comment);
         return toDTO(comment);
     }
 
     public List<CommentDTO> getCommentsByVideoId(Long videoId) {
-        List<Comment> rootComments = commentRepository.selectList(
+        List<Comment> rootComments = commentMapper.selectList(
                 new LambdaQueryWrapper<Comment>()
                         .eq(Comment::getVideoId, videoId)
                         .eq(Comment::getParentId, 0)
                         .orderByDesc(Comment::getCreatedAt)
         );
 
-        List<Comment> allReplies = commentRepository.selectList(
+        List<Comment> allReplies = commentMapper.selectList(
                 new LambdaQueryWrapper<Comment>()
                         .eq(Comment::getVideoId, videoId)
                         .ne(Comment::getParentId, 0)

@@ -1,9 +1,9 @@
-package com.yuliyuli.comment.repository;
+package com.yuliyuli.comment.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yuliyuli.comment.entity.Comment;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface CommentRepository extends BaseMapper<Comment> {
+public interface CommentMapper extends BaseMapper<Comment> {
 }

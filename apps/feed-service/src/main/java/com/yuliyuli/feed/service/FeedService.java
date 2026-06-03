@@ -2,7 +2,7 @@ package com.yuliyuli.feed.service;
 
 import com.yuliyuli.feed.dto.FeedDTO;
 import com.yuliyuli.feed.entity.Feed;
-import com.yuliyuli.feed.repository.FeedRepository;
+import com.yuliyuli.feed.mapper.FeedMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FeedService {
-    private final FeedRepository feedRepository;
+    private final FeedMapper feedMapper;
 
     public FeedDTO publishFeed(Long userId, String userName, String userAvatar,
                                String type, Long videoId, String videoTitle,
@@ -30,18 +30,18 @@ public class FeedService {
         feed.setVideoCover(videoCover);
         feed.setContent(content);
         feed.setCreatedAt(LocalDateTime.now());
-        feedRepository.save(feed);
+        feedMapper.save(feed);
         return toDTO(feed);
     }
 
     public List<FeedDTO> getUserFeed(Long userId, int page, int size) {
-        List<Feed> feeds = feedRepository.findByUserIdOrderByCreatedAtDesc(
+        List<Feed> feeds = feedMapper.findByUserIdOrderByCreatedAtDesc(
                 userId, PageRequest.of(page, size));
         return feeds.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public List<FeedDTO> getFollowingFeed(List<Long> followingUserIds, int page, int size) {
-        List<Feed> feeds = feedRepository.findByUserIdInOrderByCreatedAtDesc(
+        List<Feed> feeds = feedMapper.findByUserIdInOrderByCreatedAtDesc(
                 followingUserIds, PageRequest.of(page, size));
         return feeds.stream().map(this::toDTO).collect(Collectors.toList());
     }

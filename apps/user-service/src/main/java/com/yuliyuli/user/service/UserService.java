@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuliyuli.user.config.JwtUtil;
 import com.yuliyuli.user.dto.*;
 import com.yuliyuli.user.entity.User;
-import com.yuliyuli.user.repository.UserRepository;
+import com.yuliyuli.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
@@ -31,7 +31,7 @@ public class UserService {
     private static final long USER_INFO_TTL_MINUTES = 30;
 
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.selectOne(
+        User user = userMapper.selectOne(
                 new LambdaQueryWrapper<User>()
                         .eq(User::getUsername, request.getUsername())
         );
@@ -46,7 +46,7 @@ public class UserService {
     }
 
     public void register(RegisterRequest request) {
-        Long count = userRepository.selectCount(
+        Long count = userMapper.selectCount(
                 new LambdaQueryWrapper<User>()
                         .eq(User::getUsername, request.getUsername())
         );
@@ -60,7 +60,7 @@ public class UserService {
         user.setNickname(request.getNickname());
         user.setLevel(0);
         user.setCoin(0L);
-        userRepository.insert(user);
+        userMapper.insert(user);
     }
 
     public UserDTO getUserById(Long userId) {
@@ -75,7 +75,7 @@ public class UserService {
             // Cache miss, fall through to DB
         }
 
-        User user = userRepository.selectById(userId);
+        User user = userMapper.selectById(userId);
         if (user == null) {
             throw new RuntimeException("用户不存在");
         }
@@ -93,7 +93,7 @@ public class UserService {
     }
 
     public void updateProfile(Long userId, UpdateProfileRequest request) {
-        User user = userRepository.selectById(userId);
+        User user = userMapper.selectById(userId);
         if (user == null) {
             throw new RuntimeException("用户不存在");
         }
@@ -104,7 +104,7 @@ public class UserService {
         if (request.getGender() != null) user.setGender(request.getGender());
         if (request.getBirthday() != null) user.setBirthday(request.getBirthday());
 
-        userRepository.updateById(user);
+        userMapper.updateById(user);
         // Invalidate user info cache
         redisTemplate.delete(USER_INFO_PREFIX + userId);
     }
@@ -133,18 +133,18 @@ public class UserService {
             );
         }
         wrapper.orderByDesc(User::getCreatedAt);
-        Page<User> result = userRepository.selectPage(userPage, wrapper);
+        Page<User> result = userMapper.selectPage(userPage, wrapper);
         return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public void toggleUserStatus(Long userId) {
-        User user = userRepository.selectById(userId);
+        User user = userMapper.selectById(userId);
         if (user != null) {
             // User is active (deleted=0), ban them
-            userRepository.updateDeletedById(userId, 1);
+            userMapper.updateDeletedById(userId, 1);
         } else {
             // User might be banned (deleted=1), unban them
-            int updated = userRepository.updateDeletedById(userId, 0);
+            int updated = userMapper.updateDeletedById(userId, 0);
             if (updated == 0) {
                 throw new RuntimeException("用户不存在");
             }

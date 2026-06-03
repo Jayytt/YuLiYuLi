@@ -3,7 +3,7 @@ package com.yuliyuli.favorite.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yuliyuli.favorite.dto.FavoriteDTO;
 import com.yuliyuli.favorite.entity.Favorite;
-import com.yuliyuli.favorite.repository.FavoriteRepository;
+import com.yuliyuli.favorite.mapper.FavoriteMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FavoriteService {
-    private final FavoriteRepository favoriteRepository;
+    private final FavoriteMapper favoriteMapper;
 
     public void addFavorite(Long userId, Long videoId) {
-        Long count = favoriteRepository.selectCount(
+        Long count = favoriteMapper.selectCount(
                 new LambdaQueryWrapper<Favorite>()
                         .eq(Favorite::getUserId, userId)
                         .eq(Favorite::getVideoId, videoId)
@@ -30,11 +30,11 @@ public class FavoriteService {
         favorite.setUserId(userId);
         favorite.setVideoId(videoId);
         favorite.setCreatedAt(LocalDateTime.now());
-        favoriteRepository.insert(favorite);
+        favoriteMapper.insert(favorite);
     }
 
     public void removeFavorite(Long userId, Long videoId) {
-        favoriteRepository.delete(
+        favoriteMapper.delete(
                 new LambdaQueryWrapper<Favorite>()
                         .eq(Favorite::getUserId, userId)
                         .eq(Favorite::getVideoId, videoId)
@@ -42,7 +42,7 @@ public class FavoriteService {
     }
 
     public boolean isFavorited(Long userId, Long videoId) {
-        Long count = favoriteRepository.selectCount(
+        Long count = favoriteMapper.selectCount(
                 new LambdaQueryWrapper<Favorite>()
                         .eq(Favorite::getUserId, userId)
                         .eq(Favorite::getVideoId, videoId)
@@ -51,7 +51,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteDTO> getUserFavorites(Long userId) {
-        List<Favorite> favorites = favoriteRepository.selectList(
+        List<Favorite> favorites = favoriteMapper.selectList(
                 new LambdaQueryWrapper<Favorite>()
                         .eq(Favorite::getUserId, userId)
                         .orderByDesc(Favorite::getCreatedAt)

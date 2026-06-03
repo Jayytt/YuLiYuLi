@@ -1,9 +1,9 @@
-package com.yuliyuli.video.repository;
+package com.yuliyuli.video.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yuliyuli.video.entity.Video;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface VideoRepository extends BaseMapper<Video> {
+public interface VideoMapper extends BaseMapper<Video> {
 }

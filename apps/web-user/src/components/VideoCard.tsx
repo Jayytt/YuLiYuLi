@@ -9,6 +9,7 @@ interface VideoCardProps {
   danmakuCount: number;
   duration: number;
   createdAt?: string;
+  likeCount?: number;
 }
 
 function formatCount(count: number): string {
@@ -24,95 +25,145 @@ function formatDuration(seconds: number): string {
   return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
 }
 
-function formatTimeAgo(dateStr?: string): string {
+function formatDate(dateStr?: string): string {
   if (!dateStr) return '';
-  const now = new Date();
   const date = new Date(dateStr);
-  const diff = now.getTime() - date.getTime();
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(diff / 3600000);
-  const days = Math.floor(diff / 86400000);
-
-  if (minutes < 1) return '刚刚';
-  if (minutes < 60) return `${minutes}分钟前`;
-  if (hours < 24) return `${hours}小时前`;
-  if (days < 30) return `${days}天前`;
-  if (days < 365) return `${Math.floor(days / 30)}个月前`;
-  return `${Math.floor(days / 365)}年前`;
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${month}-${day}`;
 }
 
-export default function VideoCard({ id, title, coverUrl, userName, viewCount, danmakuCount, duration, createdAt }: VideoCardProps) {
+export default function VideoCard({ id, title, coverUrl, userName, viewCount, danmakuCount, duration, createdAt, likeCount }: VideoCardProps) {
   return (
-    <Link href={`/video/${id}`} className="group block">
-      {/* 缩略图 */}
-      <div className="bili-thumbnail">
-        {coverUrl ? (
-          <img
-            src={coverUrl}
-            alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center" style={{ background: 'var(--bg-active)' }}>
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="4" y="8" width="32" height="24" rx="2" stroke="var(--text-disabled)" strokeWidth="1.5" />
-              <circle cx="14" cy="16" r="2" fill="var(--text-disabled)" />
-              <path d="M4 26l8-6 4 3 8-8 12 10" stroke="var(--text-disabled)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-        )}
-        {/* 时长 */}
-        {duration > 0 && (
-          <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-white text-[12px] px-1.5 py-[1px] rounded-sm leading-[18px] backdrop-blur-sm">
-            {formatDuration(duration)}
-          </span>
-        )}
-        {/* 底部渐变遮罩 */}
-        <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        {/* 播放按钮 hover */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M6 3l12 7-12 7V3z" fill="white" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      {/* 信息区 */}
-      <div className="mt-2 px-[2px]">
-        {/* 标题 */}
-        <h3 className="text-[14px] leading-[20px] text-[var(--text-primary)] bili-line-clamp-2 group-hover:text-[var(--brand-blue)] transition-colors font-medium">
-          {title}
-        </h3>
-        {/* 底部信息: UP主 + 播放量 */}
-        <div className="mt-[6px] flex items-center justify-between">
-          <div className="flex items-center gap-1.5 min-w-0">
-            {/* UP主头像 */}
-            <div className="w-[18px] h-[18px] rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden" style={{ background: 'var(--bg-active)' }}>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <circle cx="5" cy="3.5" r="1.8" stroke="var(--text-disabled)" strokeWidth="0.6" />
-                <path d="M1.5 9c0-2 1.5-3.5 3.5-3.5s3.5 1.5 3.5 3.5" stroke="var(--text-disabled)" strokeWidth="0.6" strokeLinecap="round" />
+    <div className="bili-video-card is-rcmd enable-no-interest">
+      <div className="bili-video-card__wrap">
+        {/* 不感兴趣按钮 - 匹配B站实际结构 */}
+        <div className="bili-video-card__no-interest">
+          <div className="bili-video-card__no-interest--inner">
+            <div className="bili-video-card__no-interest--left">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.2" />
+                <path d="M5 8h6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
               </svg>
             </div>
-            <span className="text-[12px] text-[var(--text-tertiary)] truncate">{userName}</span>
+            <div className="bili-video-card__no-interest--right">
+              <span>不感兴趣</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1 text-[12px] text-[var(--text-tertiary)] flex-shrink-0">
-            {/* 播放图标 */}
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M3 2.5l7 3.5-7 3.5V2.5z" fill="var(--text-disabled)" />
-            </svg>
-            <span>{formatCount(viewCount)}</span>
-            {danmakuCount > 0 && (
-              <>
-                <span className="text-[var(--border-color)] mx-0.5">·</span>
-                <span>{formatCount(danmakuCount)}弹幕</span>
-              </>
-            )}
+        </div>
+
+        {/* 缩略图区域 */}
+        <Link href={`/video/${id}`} className="bili-video-card__image--link">
+          <div className="bili-video-card__image">
+            <div className="bili-video-card__image--wrap">
+              {/* 稍后再看按钮 */}
+              <div className="bili-watch-later--wrap">
+                <span className="bili-watch-later">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 1.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15zM9 15a6 6 0 110-12 6 6 0 010 12z" fill="white" />
+                    <path d="M9 4.5v4.5l3 1.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </div>
+
+              {/* 封面图 */}
+              {coverUrl ? (
+                <picture className="bili-video-card__cover">
+                  <img
+                    src={coverUrl}
+                    alt={title}
+                    className="bili-video-card__img"
+                    loading="lazy"
+                  />
+                </picture>
+              ) : (
+                <picture className="bili-video-card__cover">
+                  <div className="w-full h-full flex items-center justify-center" style={{ background: 'var(--bg-active)' }}>
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                      <rect x="4" y="8" width="40" height="32" rx="3" stroke="var(--text-disabled)" strokeWidth="1.5" />
+                      <circle cx="16" cy="18" r="3" fill="var(--text-disabled)" />
+                      <path d="M4 32l10-8 5 4 10-10 15 12" stroke="var(--text-disabled)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                </picture>
+              )}
+
+              {/* 遮罩层 + 统计信息 - 匹配B站实际结构 */}
+              <div className="bili-video-card__mask">
+                <div className="bili-video-card__stats">
+                  <div className="bili-video-card__stats--left">
+                    {/* 播放量 - B站实际eye/play组合图标 */}
+                    <div className="bili-video-card__stats--item">
+                      <svg className="bili-video-card__stats--icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none">
+                        <path d="M15.75 8.475c0 .15-.075.337-.075.45a5.1 5.1 0 0 1-4.35 4.688c-.45.075-.975.112-1.5.112s-1.05-.037-1.5-.112a5.1 5.1 0 0 1-4.35-4.688c0-.112-.075-.3-.075-.45s.075-.337.075-.45A5.1 5.1 0 0 1 8.325 3.375c.45-.075.975-.112 1.5-.112s1.05.037 1.5.112a5.1 5.1 0 0 1 4.35 4.688c0 .112.075.3.075.45" stroke="#fff" strokeWidth="1.1" />
+                        <circle cx="10.5" cy="8.55" r="2.025" stroke="#fff" strokeWidth="1.1" />
+                      </svg>
+                      <span>{formatCount(viewCount)}</span>
+                    </div>
+                    {/* 弹幕量 - B站实际线条+圆点图标 */}
+                    <div className="bili-video-card__stats--item">
+                      <svg className="bili-video-card__stats--icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none">
+                        <path d="M1.5 4.5h9M1.5 9h12M1.5 13.5h6" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" />
+                        <circle cx="15" cy="13.5" r="1.5" fill="#fff" />
+                      </svg>
+                      <span>{formatCount(danmakuCount)}</span>
+                    </div>
+                  </div>
+                  {/* 时长 - 右下角 */}
+                  <div className="bili-video-card__stats__duration">
+                    {duration > 0 && formatDuration(duration)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        {/* 信息区 */}
+        <div className="bili-video-card__info">
+          <div className="bili-video-card__info--right">
+            {/* 不感兴趣按钮 (信息区) */}
+            <div className="bili-video-card__info--no-interest">
+              <svg className="bili-video-card__info--no-interest--icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="4" cy="8" r="1.5" fill="var(--text3)" />
+                <circle cx="8" cy="8" r="1.5" fill="var(--text3)" />
+                <circle cx="12" cy="8" r="1.5" fill="var(--text3)" />
+              </svg>
+            </div>
+
+            <Link href={`/video/${id}`} className="bili-video-card__info--tit">
+              <h3 className="bili-video-card__info--title bili-line-clamp-2">
+                {title}
+              </h3>
+            </Link>
+
+            <div className="bili-video-card__info--bottom">
+              {/* 点赞数 - 匹配B站实际 */}
+              {likeCount !== undefined && likeCount > 0 && (
+                <div className="bili-video-card__info--icon-text">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M3.5 5.5v5H2a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5h1.5zm2-.5L7 1.5A1.5 1.5 0 018.5 2.5l.5 2.5h2.5a1.5 1.5 0 011.5 1.75l-.75 5A1.5 1.5 0 0111 13H5V5.5z" stroke="var(--text3)" strokeWidth="1" strokeLinejoin="round" />
+                  </svg>
+                  <span>{formatCount(likeCount)}</span>
+                </div>
+              )}
+
+              <div className="bili-video-card__info--owner">
+                {/* UP主图标 - B站实际麦克风/音符SVG */}
+                <svg className="bili-video-card__info--owner__up" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path d="M11 1C5.477 1 1 5.477 1 11s4.477 10 10 10 10-4.477 10-10S16.523 1 11 1zm0 3a3.5 3.5 0 110 7 3.5 3.5 0 010-7zm0 14.5a7.5 7.5 0 01-6-2.94c.03-1.98 4-3.06 6-3.06s5.97 1.08 6 3.06A7.5 7.5 0 0111 18.5z" fill="var(--text4)" />
+                </svg>
+                <Link href="#" className="bili-video-card__info--owner-link">
+                  <span className="bili-video-card__info--author">{userName}</span>
+                </Link>
+                {createdAt && (
+                  <span className="bili-video-card__info--date">· {formatDate(createdAt)}</span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

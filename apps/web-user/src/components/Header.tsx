@@ -5,12 +5,63 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const navLinks = [
+  { label: '番剧', href: '//www.bilibili.com/anime/' },
+  { label: '直播', href: '//live.bilibili.com' },
+  { label: '游戏中心', href: '//game.bilibili.com/platform' },
+  { label: '会员购', href: '//show.bilibili.com/platform/home.html' },
+  { label: '漫画', href: '//manga.bilibili.com' },
+  { label: '赛事', href: '//www.bilibili.com/match/home/' },
+];
+
+const channelLinks = [
   { label: '番剧', href: '/category/anime' },
-  { label: '直播', href: '/category/live' },
-  { label: '游戏中心', href: '/category/game' },
-  { label: '会员购', href: '/vip' },
-  { label: '漫画', href: '/category/manga' },
-  { label: '赛事', href: '/category/match' },
+  { label: '电影', href: '/category/movie' },
+  { label: '国创', href: '/category/guochuang' },
+  { label: '电视剧', href: '/category/tv' },
+  { label: '综艺', href: '/category/variety' },
+  { label: '纪录片', href: '/category/documentary' },
+  { label: '动画', href: '/category/douga' },
+  { label: '游戏', href: '/category/game' },
+  { label: '鬼畜', href: '/category/kichiku' },
+  { label: '音乐', href: '/category/music' },
+  { label: '舞蹈', href: '/category/dance' },
+  { label: '影视', href: '/category/cinephile' },
+  { label: '娱乐', href: '/category/ent' },
+  { label: '知识', href: '/category/knowledge' },
+  { label: '科技数码', href: '/category/tech', spacing: '0px' },
+  { label: '资讯', href: '/category/information' },
+  { label: '美食', href: '/category/food' },
+  { label: '小剧场', href: '/category/shortplay' },
+  { label: '汽车', href: '/category/car' },
+  { label: '时尚美妆', href: '/category/fashion', spacing: '0px' },
+  { label: '体育运动', href: '/category/sports', spacing: '0px' },
+  { label: '动物', href: '/category/animal' },
+  { label: 'vlog', href: '/category/vlog', spacing: '0px' },
+  { label: '绘画', href: '/category/painting' },
+  { label: '人工智能', href: '/category/ai', spacing: '0px' },
+  { label: '家装房产', href: '/category/home', spacing: '0px' },
+  { label: '户外潮流', href: '/category/outdoors', spacing: '0px' },
+  { label: '健身', href: '/category/gym' },
+  { label: '手工', href: '/category/handmake' },
+  { label: '旅游出行', href: '/category/travel', spacing: '0px' },
+  { label: '三农', href: '/category/rural' },
+  { label: '亲子', href: '/category/parenting' },
+  { label: '健康', href: '/category/health' },
+  { label: '情感', href: '/category/emotion' },
+  { label: '生活兴趣', href: '/category/life_joy', spacing: '0px' },
+  { label: '生活经验', href: '/category/life_experience', spacing: '0px' },
+  { label: '公益', href: '/category/love' },
+  { label: '超高清', href: '/category/uhd' },
+  { label: '视频播客', href: '/category/podcast', spacing: '0px' },
+];
+
+const channelRightLinks = [
+  { label: '专栏', href: '//www.bilibili.com/read/home/' },
+  { label: '直播', href: '//live.bilibili.com' },
+  { label: '活动', href: '//www.bilibili.com/blackboard/era/reward-activity-list-page.html' },
+  { label: '课堂', href: '//www.bilibili.com/cheese/' },
+  { label: '社区中心', href: '//www.bilibili.com/blackboard/activity-5zJxM3spoS.html' },
+  { label: '新歌热榜', href: '//music.bilibili.com/pc/music-center/' },
 ];
 
 export default function Header() {
@@ -38,11 +89,10 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bili-header">
+    <header className="bili-header large-header">
       <div className="bili-header__bar">
         {/* 左侧: Logo + 导航 */}
         <ul className="left-entry">
-          {/* Logo + 首页 */}
           <li>
             <Link href="/" className="entry-title">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="zhuzhan-icon">
@@ -51,15 +101,13 @@ export default function Header() {
               <span>首页</span>
             </Link>
           </li>
-          {/* 导航链接 */}
           {navLinks.map((link) => (
-            <li key={link.href} className="v-popover-wrap">
-              <Link href={link.href} className="default-entry">
+            <li key={link.label} className="v-popover-wrap">
+              <a href={link.href} target="_blank" className="default-entry">
                 <span>{link.label}</span>
-              </Link>
+              </a>
             </li>
           ))}
-          {/* 下载客户端 */}
           <li className="v-popover-wrap">
             <a href="//app.bilibili.com" target="_blank" className="download-entry download-client-trigger">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="download-client-trigger__icon">
@@ -67,16 +115,15 @@ export default function Header() {
                 <path d="M3.48023 4.29936C2.40686 4.29936 1.53672 5.15772 1.53672 6.21656V11.5669C1.53672 12.6257 2.40686 13.4841 3.48023 13.4841H12.5198C13.5931 13.4841 14.4633 12.6257 14.4633 11.5669V6.21656C14.4633 5.15772 13.5931 4.29936 12.5198 4.29936H11.6158C11.1915 4.29936 10.8475 3.96001 10.8475 3.5414C10.8475 3.12279 11.1915 2.78344 11.6158 2.78344H12.5198C14.4418 2.78344 16 4.3205 16 6.21656V11.5669C16 13.4629 14.4418 15 12.5198 15H3.48023C1.55815 15 0 13.4629 0 11.5669V6.21656C0 4.3205 1.55815 2.78344 3.48023 2.78344H4.38418C4.80853 2.78344 5.15254 3.12279 5.15254 3.5414C5.15254 3.96001 4.80853 4.29936 4.38418 4.29936H3.48023Z" fill="currentColor" />
               </svg>
               <span>下载客户端</span>
-              <span className="new-icon"></span>
             </a>
           </li>
         </ul>
 
         {/* 中间: 搜索框 */}
-        <div className="center-search-container" ref={searchRef}>
+        <div className="center-search-container offset-center-search" ref={searchRef}>
           <div className="center-search__bar">
             <form
-              className={searchFocused ? 'is-focus' : ''}
+              id="nav-searchform"
               style={{ borderRadius: '8px' }}
               onSubmit={(e) => {
                 e.preventDefault();
@@ -88,6 +135,8 @@ export default function Header() {
                   className="nav-search-input"
                   type="text"
                   autoComplete="off"
+                  accessKey="s"
+                  maxLength={100}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => {
@@ -97,8 +146,8 @@ export default function Header() {
                   onBlur={() => {
                     setSearchFocused(false);
                   }}
-                  placeholder="周杰伦 新专辑mv"
-                  title="周杰伦 新专辑mv"
+                  placeholder=""
+                  title=""
                 />
                 {searchQuery && (
                   <div className="nav-search-clean" onClick={() => setSearchQuery('')}>
@@ -114,140 +163,74 @@ export default function Header() {
                 </svg>
               </div>
             </form>
+            <div className="search-panel" style={{ display: 'none' }}></div>
           </div>
-          {/* 搜索下拉 */}
-          {showSearchHistory && (
-            <div className="search-panel">
-              <div className="search-panel__content">
-                <div className="px-4 py-2 text-[12px] text-[var(--text3)]">热门搜索</div>
-                {['热门视频', '新番推荐', '游戏实况', '音乐现场'].map((item) => (
-                  <button
-                    key={item}
-                    className="w-full text-left px-4 py-2 text-[13px] text-[var(--text2)] hover:bg-[var(--bg-active)] hover:text-[var(--text1)] transition-colors"
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      setSearchQuery(item);
-                      setShowSearchHistory(false);
-                      router.push(`/search?q=${encodeURIComponent(item)}`);
-                    }}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* 右侧: 用户操作区 */}
-        <ul className="right-entry">
-          {/* 头像/登录 */}
-          <li className="v-popover-wrap header-avatar-wrap">
-            <div className="header-avatar-wrap--container">
-              <button className="header-entry-mini">
-                <div className="mini-avatar">
-                  <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
-                    <circle cx="17" cy="17" r="17" fill="var(--Ga2)" />
-                    <circle cx="17" cy="13" r="5" fill="var(--Ga4)" />
-                    <path d="M6 30c0-6.075 4.925-11 11-11s11 4.925 11 11" fill="var(--Ga4)" />
-                  </svg>
-                </div>
-              </button>
-            </div>
-          </li>
+        {/* 右侧: 占位符 (B站SSR时为空) */}
+        <div className="mini-header-right-loading"></div>
+      </div>
 
-          {/* 大会员 */}
-          <li className="v-popover-wrap">
-            <a href="//account.bilibili.com/big" target="_blank" className="right-entry__outside right-entry--vip">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="right-entry-icon">
-                <path fillRule="evenodd" clipRule="evenodd" d="M10 1C5.02955 1 1 5.02955 1 10C1 14.9705 5.02955 19 10 19C14.9705 19 19 14.9705 19 10C19 5.02955 14.9705 1 10 1ZM10.0006 2.63614C14.0612 2.63614 17.3642 5.93996 17.3642 9.99977C17.3642 14.0604 14.0612 17.3634 10.0006 17.3634C5.93996 17.3634 2.63696 14.0604 2.63696 9.99977C2.63696 5.93996 5.93996 2.63614 10.0006 2.63614Z" fill="currentColor" />
-                <path d="M13.1381 8.05573V8.05331H10.7706C10.7859 7.8643 10.7948 7.67286 10.7948 7.47981C10.7948 7.26414 10.7843 7.05008 10.7649 6.83926C10.7658 6.82552 10.7674 6.81179 10.7674 6.79725V6.79483C10.7674 6.35541 10.4111 6 9.97254 6C9.53312 6 9.17771 6.35622 9.17771 6.79483V6.79725C9.17771 6.85137 9.18336 6.90468 9.19386 6.95557L9.18255 6.95719C9.19871 7.12924 9.20759 7.30291 9.20759 7.479C9.20759 7.67286 9.19709 7.8643 9.17771 8.0525H6.74313V8.05573C6.32876 8.08239 6 8.42649 6 8.84814V8.85057C6 9.28998 6.33683 9.64216 6.77544 9.64216C6.80937 9.64216 6.8441 9.64378 6.89903 9.64297L8.7601 9.63893C8.28837 10.7294 7.47011 11.6341 6.44507 12.2149C6.44023 12.2173 6.43619 12.2197 6.43134 12.2229C6.42003 12.2294 6.40953 12.2359 6.39822 12.2423L6.39903 12.2431C6.17528 12.3837 6.02585 12.6325 6.02585 12.916V12.9184C6.02585 13.3578 6.38207 13.7132 6.82068 13.7132C6.99111 13.7132 7.14782 13.6591 7.27706 13.5687C8.7706 12.706 9.9168 11.3094 10.4556 9.64055H13.0105C13.0517 9.64136 13.1131 9.63893 13.1131 9.63893C13.5905 9.62924 13.9039 9.2916 13.9039 8.85299V8.85057C13.9047 8.42003 13.5638 8.07108 13.1381 8.05573Z" fill="currentColor" />
-                <path d="M13.7731 12.5388C13.7715 12.5356 13.7691 12.5331 13.7674 12.5307C13.74 12.4814 13.7077 12.4362 13.6713 12.3942C13.1584 11.6672 12.513 11.0412 11.7674 10.5541L11.7666 10.555C11.6366 10.4613 11.4766 10.4055 11.3046 10.4055C10.8652 10.4055 10.5098 10.7617 10.5098 11.2003V11.2028C10.5098 11.5033 10.677 11.765 10.9233 11.8999C11.5615 12.3215 12.0825 12.8045 12.4944 13.4499L12.5372 13.5041C12.6786 13.6333 12.866 13.7133 13.0728 13.7133C13.5122 13.7133 13.8676 13.3571 13.8676 12.9184V12.916C13.8668 12.7795 13.8329 12.6511 13.7731 12.5388Z" fill="currentColor" />
-              </svg>
-              <span className="right-entry-text">大会员</span>
-            </a>
-          </li>
+      {/* Banner横幅 */}
+      <div className="bili-header__banner">
+        <div className="header-banner__inner"></div>
+        <div className="taper-line"></div>
+      </div>
 
-          {/* 消息 */}
-          <li className="v-popover-wrap right-entry__outside right-entry--message">
-            <a className="right-entry__outside" href="//message.bilibili.com" target="_blank">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="right-entry-icon">
-                <path d="M15.435 17.7717H4.567C2.60143 17.7717 1 16.1723 1 14.2047V5.76702C1 3.80144 2.59942 2.20001 4.567 2.20001H15.433C17.3986 2.20001 19 3.79943 19 5.76702V14.2047C19.002 16.1703 17.4006 17.7717 15.435 17.7717ZM4.567 4.00062C3.59327 4.00062 2.8006 4.79328 2.8006 5.76702V14.2047C2.8006 15.1784 3.59327 15.9711 4.567 15.9711H15.433C16.4067 15.9711 17.1994 15.1784 17.1994 14.2047V5.76702C17.1994 4.79328 16.4067 4.00062 15.433 4.00062H4.567Z" fill="currentColor" />
-                <path d="M9.99943 11.2C9.51188 11.2 9.02238 11.0667 8.59748 10.8019L8.5407 10.7635L4.3329 7.65675C3.95304 7.37731 3.88842 6.86226 4.18996 6.50976C4.48954 6.15544 5.0417 6.09699 5.4196 6.37643L9.59412 9.45943C9.84279 9.60189 10.1561 9.60189 10.4067 9.45943L14.5812 6.37643C14.9591 6.09699 15.5113 6.15544 15.8109 6.50976C16.1104 6.86409 16.0478 7.37731 15.6679 7.65675L11.4014 10.8019C10.9765 11.0667 10.487 11.2 9.99943 11.2Z" fill="currentColor" />
-              </svg>
-              <span className="right-entry-text">消息</span>
-            </a>
-          </li>
-
-          {/* 动态 */}
-          <li className="v-popover-wrap">
-            <a href="//t.bilibili.com" target="_blank" className="right-entry__outside">
-              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" className="right-entry-icon">
-                <g clipPath="url(#clip0_dynamic)">
-                  <path d="M10 10.743C7.69883 10.743 5.83333 8.87747 5.83333 6.5763C5.83333 4.27512 7.69883 2.40964 10 2.40964V10.743Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                  <path d="M10 10.743C10 13.0441 8.1345 14.9096 5.83333 14.9096C3.53217 14.9096 1.66667 13.0441 1.66667 10.743H10Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                  <path d="M10 10.743C10 8.44182 11.8655 6.57632 14.1667 6.57632C16.4679 6.57632 18.3333 8.44182 18.3333 10.743H10Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                  <path d="M9.99999 10.743C12.3012 10.743 14.1667 12.6085 14.1667 14.9096C14.1667 17.2108 12.3012 19.0763 9.99999 19.0763V10.743Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                </g>
-                <defs>
-                  <clipPath id="clip0_dynamic">
-                    <rect width="20" height="20" fill="currentColor" transform="matrix(-1 0 0 1 20 0.742981)" />
-                  </clipPath>
-                </defs>
-              </svg>
-              <span className="right-entry-text">动态</span>
-            </a>
-          </li>
-
-          {/* 收藏 */}
-          <li className="v-popover-wrap">
-            <a className="right-entry__outside" href="//space.bilibili.com/favlist" target="_blank">
-              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" className="right-entry-icon">
-                <path fillRule="evenodd" clipRule="evenodd" d="M11.0505 3.16759L12.7915 6.69573C12.954 7.02647 13.2702 7.25612 13.6349 7.30949L17.5294 7.87474C18.448 8.00817 18.8159 9.13785 18.1504 9.78639L15.3331 12.5334C15.0686 12.7905 14.9481 13.1609 15.0104 13.5256L15.6759 17.4031C15.8328 18.3184 14.8721 19.0171 14.0497 18.5845L10.5661 16.7537C10.2402 16.5823 9.85042 16.5823 9.52373 16.7537L6.04087 18.5845C5.21848 19.0171 4.2578 18.3184 4.41468 17.4031L5.07939 13.5256C5.14166 13.1609 5.02198 12.7905 4.75755 12.5334L1.9394 9.78639C1.27469 9.13785 1.64182 8.00817 2.56126 7.87474L6.4549 7.30949C6.82041 7.25612 7.13578 7.02647 7.29832 6.69573L9.04015 3.16759C9.45095 2.33468 10.6389 2.33468 11.0505 3.16759Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M11.603 11.8739C11.413 12.5556 10.7871 13.0554 10.0447 13.0554C9.29592 13.0554 8.66679 12.5467 8.48242 11.8569" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="right-entry-text">收藏</span>
-            </a>
-          </li>
-
-          {/* 历史 */}
-          <li className="v-popover-wrap">
-            <a href="//www.bilibili.com/history" target="_blank" className="right-entry__outside">
-              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" className="right-entry-icon">
-                <path fillRule="evenodd" clipRule="evenodd" d="M10 1.74286C5.02955 1.74286 1 5.7724 1 10.7429C1 15.7133 5.02955 19.7429 10 19.7429C14.9705 19.7429 19 15.7133 19 10.7429C19 5.7724 14.9705 1.74286 10 1.74286ZM10.0006 3.379C14.0612 3.379 17.3642 6.68282 17.3642 10.7426C17.3642 14.8033 14.0612 18.1063 10.0006 18.1063C5.93996 18.1063 2.63696 14.8033 2.63696 10.7426C2.63696 6.68282 5.93996 3.379 10.0006 3.379Z" fill="currentColor" />
-                <path d="M9.99985 6.6521V10.743" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-                <path d="M12.4545 10.7427H10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-              </svg>
-              <span className="right-entry-text">历史</span>
-            </a>
-          </li>
-
-          {/* 创作中心 */}
-          <li className="right-entry-item">
-            <a href="//member.bilibili.com/platform/home" target="_blank" className="right-entry__outside">
-              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" className="right-entry-icon">
-                <path fillRule="evenodd" clipRule="evenodd" d="M9.99999 1.74286C9.92916 1.74286 9.85916 1.74369 9.78833 1.74536C5.85416 1.85453 2.58416 5.14869 2.50166 9.08286C2.44999 11.5404 3.58666 13.7304 5.36999 15.1337C5.52166 15.2529 5.63166 15.4162 5.67333 15.6045L6.30416 18.447C6.51583 19.3987 7.36083 20.0762 8.33583 20.0762H11.6617C12.6383 20.0762 13.4842 19.3987 13.6958 18.4445L14.3275 15.602C14.3692 15.4154 14.4775 15.2537 14.6275 15.1354C16.3733 13.7629 17.5 11.637 17.5 9.24286C17.5 5.10036 14.1425 1.74286 9.99999 1.74286ZM10.0003 3.40939C13.2161 3.40939 15.8336 6.02606 15.8336 9.24273C15.8336 11.0386 15.0186 12.7086 13.5978 13.8252C13.1428 14.1827 12.8244 14.6852 12.7011 15.2402L12.0686 18.0827C12.0269 18.2752 11.8586 18.4094 11.6619 18.4094H8.33609C8.14109 18.4094 7.97359 18.2761 7.93192 18.0852L7.30025 15.2427C7.17609 14.6869 6.85775 14.1827 6.40109 13.8236C4.94359 12.6769 4.12942 10.9619 4.16859 9.11773C4.23192 6.05523 6.77442 3.49606 9.83442 3.41189C9.88942 3.41023 9.94525 3.40939 10.0003 3.40939Z" fill="currentColor" />
-                <path d="M10 6.81299L8.81253 9.18726H11.1875L9.99952 11.561" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M6.66656 15.9095H13.3332" stroke="currentColor" strokeWidth="1.7" />
-              </svg>
-              <span className="right-entry-text">创作中心</span>
-            </a>
-          </li>
-
-          {/* 投稿 */}
-          <li className="right-entry-item right-entry-item--upload">
-            <a href="//member.bilibili.com/platform/upload/video/frame" target="_blank">
-              <div className="header-upload-entry">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="header-upload-entry__icon">
-                  <path d="M12.0824 10H14.1412C15.0508 10 15.7882 10.7374 15.7882 11.6471V12.8824C15.7882 13.792 15.0508 14.5294 14.1412 14.5294H3.84707C2.93743 14.5294 2.20001 13.792 2.20001 12.8824V11.6471C2.20001 10.7374 2.93743 10 3.84707 10H5.90589" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M8.99413 11.2353L8.99413 3.82353" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M12.0823 6.29413L8.9941 3.20589L5.90587 6.29413" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      {/* 频道区域 */}
+      <div className="bili-header__channel">
+        <div className="bili-header__channel-inner">
+          <div className="channel-icons">
+            <Link href="/dynamic" className="channel-icons__item">
+              <div className="icon-bg icon-bg__dynamic">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path d="M11 2C6.03 2 2 6.03 2 11s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" fill="var(--text2)" />
+                  <path d="M11 6v5l4.28 2.54.72-1.21-3.5-2.08V6H11z" fill="var(--text2)" />
                 </svg>
-                <span className="header-upload-entry__text">投稿</span>
               </div>
-            </a>
-          </li>
-        </ul>
+              <span className="icon-title">动态</span>
+            </Link>
+            <Link href="/popular" className="channel-icons__item">
+              <div className="icon-bg icon-bg__popular">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M4.89054 17.272L4.89277 17.2742C6.49674 18.8782 8.66472 19.7888 10.9624 19.7888C13.2503 19.7888 15.2113 19.0539 16.6107 17.6108C18.0002 16.1345 18.7835 14.182 18.7421 12.1819C18.7852 11.3835 18.6916 9.36321 17.4088 6.75488C17.209 6.35523 16.8163 6.06598 16.3391 5.96993C15.8904 5.87103 15.4021 6.01997 15.061 6.35741C14.9094 6.48781 14.7796 6.61755 14.6655 6.7317C14.2107 3.35588 12.6083 1.7368 11.1654 1.00465C11.0775 0.931205 11.0311 0.900467 10.9694 0.888912C10.2276 0.608301 9.41043 1.01168 9.1237 1.77629C8.50566 3.46558 7.35287 4.62281 6.16627 5.76704C4.51756 7.33121 2.75938 9.03623 2.80163 12.093C2.75906 14.055 3.54464 15.8826 4.89054 17.272Z" fill="white" />
+                </svg>
+              </div>
+              <span className="icon-title">热门</span>
+            </Link>
+          </div>
+
+          <div className="right-channel-container">
+            <div className="channel-items__left">
+              {channelLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="channel-link"
+                  style={{ letterSpacing: link.spacing || '2px' }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            <div className="channel-items__right">
+              {channelRightLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="channel-link__right"
+                  target="_blank"
+                >
+                  <svg className="side-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M10 6v4l3 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                  <span>{link.label}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   );

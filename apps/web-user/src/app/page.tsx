@@ -1,7 +1,30 @@
 import Header from '@/components/Header';
 import VideoCard from '@/components/VideoCard';
 import VideoCardSkeleton from '@/components/VideoCardSkeleton';
-import Link from 'next/link';
+import BannerCarousel from '@/components/BannerCarousel';
+
+const MOCK_VIDEOS = [
+  { id: 1, title: '【4K】超治愈！日本京都樱花季漫步旅拍 | 春日限定', coverUrl: '', userName: '旅行小记', viewCount: 125800, danmakuCount: 3200, duration: 485, createdAt: '2024-12-01T10:00:00Z', likeCount: 8900 },
+  { id: 2, title: '手把手教你从零搭建React项目，前端入门必看！', coverUrl: '', userName: 'CodeMaster', viewCount: 89200, danmakuCount: 1500, duration: 1200, createdAt: '2024-11-28T08:00:00Z', likeCount: 5600 },
+  { id: 3, title: '挑战一周只吃食堂！大学生省钱美食合集', coverUrl: '', userName: '吃货小王', viewCount: 56700, danmakuCount: 890, duration: 620, createdAt: '2024-11-20T14:00:00Z', likeCount: 3200 },
+  { id: 4, title: '【钢琴】用钢琴弹奏你最爱的动漫OST合集', coverUrl: '', userName: '钢琴少女', viewCount: 234000, danmakuCount: 5600, duration: 900, createdAt: '2024-11-15T16:00:00Z', likeCount: 18000 },
+  { id: 5, title: '深圳打工人的一天 | Vlog记录真实生活', coverUrl: '', userName: '深漂日记', viewCount: 45300, danmakuCount: 720, duration: 540, createdAt: '2024-11-10T12:00:00Z', likeCount: 2100 },
+  { id: 6, title: 'AI绘画到底有多强？Midjourney vs Stable Diffusion实测对比', coverUrl: '', userName: '科技探索', viewCount: 198000, danmakuCount: 4100, duration: 780, createdAt: '2024-11-05T09:00:00Z', likeCount: 12000 },
+  { id: 7, title: '零基础学Python Day1 - 环境搭建与第一个程序', coverUrl: '', userName: '编程入门', viewCount: 312000, danmakuCount: 8900, duration: 1500, createdAt: '2024-10-28T10:00:00Z', likeCount: 25000 },
+  { id: 8, title: '【猫片】我家橘猫的日常，太可爱了！', coverUrl: '', userName: '喵星人', viewCount: 67800, danmakuCount: 2300, duration: 300, createdAt: '2024-10-20T18:00:00Z', likeCount: 4500 },
+  { id: 9, title: '原神4.5版本全角色强度排行，谁才是真正的T0？', coverUrl: '', userName: '游戏攻略组', viewCount: 456000, danmakuCount: 12000, duration: 960, createdAt: '2024-10-15T11:00:00Z', likeCount: 32000 },
+  { id: 10, title: '一个人的深夜电台 | 那些年我们听过的歌', coverUrl: '', userName: '夜听FM', viewCount: 78900, danmakuCount: 1800, duration: 2400, createdAt: '2024-10-10T22:00:00Z', likeCount: 6700 },
+  { id: 11, title: '健身小白30天蜕变记录，从120斤到105斤', coverUrl: '', userName: '健身打卡', viewCount: 156000, danmakuCount: 3400, duration: 720, createdAt: '2024-10-05T07:00:00Z', likeCount: 11000 },
+  { id: 12, title: '【手工】用废纸板做了一个等比例高达模型！', coverUrl: '', userName: '手工耿', viewCount: 890000, danmakuCount: 21000, duration: 1080, createdAt: '2024-09-28T15:00:00Z', likeCount: 67000 },
+  { id: 13, title: '成都美食探店｜本地人推荐的10家宝藏小店', coverUrl: '', userName: '美食侦探', viewCount: 234000, danmakuCount: 5100, duration: 660, createdAt: '2024-09-20T12:00:00Z', likeCount: 15000 },
+  { id: 14, title: '考研数学满分经验分享｜这些方法让我从学渣变学霸', coverUrl: '', userName: '学习博主', viewCount: 178000, danmakuCount: 4200, duration: 1320, createdAt: '2024-09-15T09:00:00Z', likeCount: 13000 },
+  { id: 15, title: '雨天的东京街头 | 氛围感旅拍', coverUrl: '', userName: '胶片日记', viewCount: 345000, danmakuCount: 7800, duration: 420, createdAt: '2024-09-10T16:00:00Z', likeCount: 28000 },
+  { id: 16, title: '学会了这5道菜，你就是厨房里最靓的仔', coverUrl: '', userName: '家常美食', viewCount: 112000, danmakuCount: 2600, duration: 540, createdAt: '2024-09-05T11:00:00Z', likeCount: 7800 },
+  { id: 17, title: '【Minecraft】耗时3个月，还原了一座中国古城！', coverUrl: '', userName: 'MC建筑师', viewCount: 567000, danmakuCount: 15000, duration: 900, createdAt: '2024-08-28T14:00:00Z', likeCount: 45000 },
+  { id: 18, title: '吉他弹唱《晴天》周杰伦｜完整版教学', coverUrl: '', userName: '吉他教室', viewCount: 289000, danmakuCount: 6700, duration: 780, createdAt: '2024-08-20T10:00:00Z', likeCount: 21000 },
+  { id: 19, title: '养猫新手必看！这10个错误99%的人都犯过', coverUrl: '', userName: '宠物医生', viewCount: 198000, danmakuCount: 4500, duration: 600, createdAt: '2024-08-15T08:00:00Z', likeCount: 14000 },
+  { id: 20, title: '【ASMR】雨声+翻书声，帮你快速入睡', coverUrl: '', userName: '助眠频道', viewCount: 423000, danmakuCount: 9200, duration: 3600, createdAt: '2024-08-10T23:00:00Z', likeCount: 35000 },
+];
 
 async function getVideos() {
   try {
@@ -11,35 +34,9 @@ async function getVideos() {
     const data = await res.json();
     return data.data || [];
   } catch {
-    return null;
+    return MOCK_VIDEOS;
   }
 }
-
-const channelLinks = [
-  { label: '番剧', href: '/category/anime' },
-  { label: '国创', href: '/category/guochuang' },
-  { label: '电视剧', href: '/category/tv' },
-  { label: '综艺', href: '/category/variety' },
-  { label: '纪录片', href: '/category/documentary' },
-  { label: '动画', href: '/category/douga' },
-  { label: '游戏', href: '/category/game' },
-  { label: '鬼畜', href: '/category/kichiku' },
-  { label: '音乐', href: '/category/music' },
-  { label: '舞蹈', href: '/category/dance' },
-  { label: '影视', href: '/category/cinephile' },
-  { label: '娱乐', href: '/category/ent' },
-  { label: '知识', href: '/category/knowledge' },
-  { label: '科技数码', href: '/category/tech', spacing: '0px' },
-  { label: '资讯', href: '/category/information' },
-  { label: '美食', href: '/category/food' },
-  { label: '汽车', href: '/category/car' },
-  { label: '时尚美妆', href: '/category/fashion', spacing: '0px' },
-  { label: '体育运动', href: '/category/sports', spacing: '0px' },
-  { label: '动物', href: '/category/animal' },
-  { label: 'vlog', href: '/category/vlog', spacing: '0px' },
-  { label: '绘画', href: '/category/painting' },
-  { label: '人工智能', href: '/category/ai', spacing: '0px' },
-];
 
 export default async function Home() {
   const videos = await getVideos();
@@ -48,127 +45,55 @@ export default async function Home() {
     <div className="min-h-screen" style={{ background: 'var(--bg3)' }}>
       <Header />
 
-      {/* 频道区域 */}
-      <div className="bili-header__channel">
-        <div className="bili-header__channel-inner">
-          <div className="channel-icons">
-            <Link href="/dynamic" className="channel-icons__item">
-              <div className="icon-bg icon-bg__dynamic">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <path d="M11 2C6.03 2 2 6.03 2 11s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" fill="var(--text2)" />
-                  <path d="M11 6v5l4.28 2.54.72-1.21-3.5-2.08V6H11z" fill="var(--text2)" />
-                </svg>
-              </div>
-              <span className="icon-title">动态</span>
-            </Link>
-            <Link href="/popular" className="channel-icons__item">
-              <div className="icon-bg icon-bg__popular">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M4.89054 17.272L4.89277 17.2742C6.49674 18.8782 8.66472 19.7888 10.9624 19.7888C13.2503 19.7888 15.2113 19.0539 16.6107 17.6108C18.0002 16.1345 18.7835 14.182 18.7421 12.1819C18.7852 11.3835 18.6916 9.36321 17.4088 6.75488C17.209 6.35523 16.8163 6.06598 16.3391 5.96993C15.8904 5.87103 15.4021 6.01997 15.061 6.35741C14.9094 6.48781 14.7796 6.61755 14.6655 6.7317C14.2107 3.35588 12.6083 1.7368 11.1654 1.00465C11.0775 0.931205 11.0311 0.900467 10.9694 0.888912C10.2276 0.608301 9.41043 1.01168 9.1237 1.77629C8.50566 3.46558 7.35287 4.62281 6.16627 5.76704C4.51756 7.33121 2.75938 9.03623 2.80163 12.093C2.75906 14.055 3.54464 15.8826 4.89054 17.272Z" fill="white" />
-                </svg>
-              </div>
-              <span className="icon-title">热门</span>
-            </Link>
-          </div>
-
-          <div className="right-channel-container">
-            <div className="channel-items__left">
-              {channelLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="channel-link"
-                  style={{ letterSpacing: link.spacing || '2px' }}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 主内容区域 - 匹配B站实际结构 */}
-      <main className="bili-feed4-layout">
-        {/* Banner 轮播区域 */}
-        <div className="bili-feed4-banner">
-          <div className="banner-card">
-            <div
-              className="banner-card__bg"
-              style={{
-                background: 'linear-gradient(135deg, var(--Pi5) 0%, #FF9DB5 30%, #66DEFF 70%, var(--Lb5) 100%)',
-              }}
-            />
-            <div className="banner-card__content">
-              <h2 className="banner-card__title">YuLiYuLi</h2>
-              <p className="banner-card__desc">你感兴趣的视频都在这里</p>
-              <button className="banner-card__btn">立即体验</button>
-            </div>
-            <div className="banner-card__dots">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <span
-                  key={i}
-                  className={`banner-card__dot ${i === 0 ? 'banner-card__dot--active' : ''}`}
-                />
-              ))}
-            </div>
-            <button className="banner-card__arrow banner-card__arrow--left">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M9 2L4 7l5 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <button className="banner-card__arrow banner-card__arrow--right">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M5 2l5 5-5 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* 视频网格 - 匹配B站实际结构 */}
-        <div className="recommended-container_floor-aside">
-          <div className="feed-card">
-            {videos && videos.length > 0 ? (
-              <>
-                <div className="feed-card__content">
-                  <div className="bili-video-card__grid">
-                    {videos.map((video: any) => (
-                      <div key={video.id} className="bili-feed-card">
-                        <VideoCard
-                          id={video.id}
-                          title={video.title}
-                          coverUrl={video.coverUrl}
-                          userName={video.userName}
-                          viewCount={video.viewCount}
-                          danmakuCount={video.danmakuCount}
-                          duration={video.duration}
-                          createdAt={video.createdAt}
-                          likeCount={video.likeCount}
-                        />
-                      </div>
-                    ))}
+      {/* 主内容区域 - 匹配B站 bili-feed4 结构 */}
+      <main className="bili-feed4">
+        <div className="bili-feed4-layout">
+          <div className="feed2">
+            {/* 轮播区域 - 匹配B站 recommended-swipe 结构 */}
+            <div className="recommended-swipe" style={{ '--cover-radio': '56.25%' } as React.CSSProperties}>
+              <div className="recommended-swipe-core">
+                <div className="recommended-swipe-shim">
+                  <div className="shim-card" />
+                  <div className="shim-card" />
+                  <div className="shim-card" />
+                  <div className="shim-card" />
+                </div>
+                <div className="recommended-swipe-body">
+                  <div className="recommended-swipe-body-normal">
+                    <BannerCarousel />
                   </div>
                 </div>
-                {/* 换一换按钮 - 匹配B站实际 */}
-                <div className="feed-roll-btn">
-                  <button className="roll-btn">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M2 8a6 6 0 0110.89-3.48M14 8a6 6 0 01-10.89 3.48" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                      <path d="M14 2v4h-4M2 14v-4h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    换一换
-                  </button>
-                </div>
-              </>
-            ) : videos === null ? (
-              <div className="feed-card__content">
-                <div className="bili-video-card__grid">
-                  {Array.from({ length: 10 }).map((_, i) => (
-                    <VideoCardSkeleton key={i} />
-                  ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 视频卡片 - 每个视频一个feed-card，与feed2同级 */}
+          {videos && videos.length > 0 ? (
+            videos.map((video: any) => (
+              <div key={video.id} className="feed-card">
+                <div className="bili-feed-card">
+                  <VideoCard
+                    id={video.id}
+                    title={video.title}
+                    coverUrl={video.coverUrl}
+                    userName={video.userName}
+                    viewCount={video.viewCount}
+                    danmakuCount={video.danmakuCount}
+                    duration={video.duration}
+                    createdAt={video.createdAt}
+                    likeCount={video.likeCount}
+                  />
                 </div>
               </div>
-            ) : (
+            ))
+          ) : videos === null ? (
+            Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="feed-card">
+                <VideoCardSkeleton />
+              </div>
+            ))
+          ) : (
+            <div className="feed-card">
               <div className="feed-card__empty">
                 <svg width="80" height="80" viewBox="0 0 80 80" fill="none" className="mx-auto mb-4">
                   <circle cx="40" cy="40" r="36" stroke="var(--border-color)" strokeWidth="2" />
@@ -179,8 +104,8 @@ export default async function Home() {
                 <p className="text-[15px] text-[var(--text-tertiary)] mb-1">还没有视频内容</p>
                 <p className="text-[13px] text-[var(--text-disabled)]">启动后端服务并上传视频后，这里将显示视频列表</p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </main>
 

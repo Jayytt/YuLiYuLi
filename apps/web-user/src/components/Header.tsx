@@ -221,7 +221,6 @@ export default function Header() {
                 </svg>
                 <span className="right-entry-text">大会员</span>
               </a>
-            </li>
           </li>
           <li className="v-popover-wrap right-entry-item">
             <div className="right-entry__outside">
@@ -272,8 +271,7 @@ export default function Header() {
               <span className="right-entry-text">创作中心</span>
             </div>
           </li>
-          <li className="right-entry-item right-entry-item--upload">
-            <li className="v-popover-wrap">
+          <li className="right-entry-item right-entry-item--upload v-popover-wrap">
               <div className="header-upload-entry">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" className="header-upload-entry__icon">
                   <path d="M12.0824 10H14.1412C15.0508 10 15.7882 10.7374 15.7882 11.6471V12.8824C15.7882 13.792 15.0508 14.5294 14.1412 14.5294H3.84707C2.93743 14.5294 2.20001 13.792 2.20001 12.8824V11.6471C2.20001 10.7374 2.93743 10 3.84707 10H5.90589" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
@@ -282,7 +280,6 @@ export default function Header() {
                 </svg>
                 <span className="header-upload-entry__text">投稿</span>
               </div>
-            </li>
           </li>
         </ul>
       </div>

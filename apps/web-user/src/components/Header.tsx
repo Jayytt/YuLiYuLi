@@ -14,45 +14,45 @@ const navLinks = [
 ];
 
 const channelLinks = [
-  { label: '番剧', href: '/category/anime' },
-  { label: '电影', href: '/category/movie' },
-  { label: '国创', href: '/category/guochuang' },
-  { label: '电视剧', href: '/category/tv' },
-  { label: '综艺', href: '/category/variety' },
-  { label: '纪录片', href: '/category/documentary' },
-  { label: '动画', href: '/category/douga' },
-  { label: '游戏', href: '/category/game' },
-  { label: '鬼畜', href: '/category/kichiku' },
-  { label: '音乐', href: '/category/music' },
-  { label: '舞蹈', href: '/category/dance' },
-  { label: '影视', href: '/category/cinephile' },
-  { label: '娱乐', href: '/category/ent' },
-  { label: '知识', href: '/category/knowledge' },
-  { label: '科技数码', href: '/category/tech', spacing: '0px' },
-  { label: '资讯', href: '/category/information' },
-  { label: '美食', href: '/category/food' },
-  { label: '小剧场', href: '/category/shortplay' },
-  { label: '汽车', href: '/category/car' },
-  { label: '时尚美妆', href: '/category/fashion', spacing: '0px' },
-  { label: '体育运动', href: '/category/sports', spacing: '0px' },
-  { label: '动物', href: '/category/animal' },
-  { label: 'vlog', href: '/category/vlog', spacing: '0px' },
-  { label: '绘画', href: '/category/painting' },
-  { label: '人工智能', href: '/category/ai', spacing: '0px' },
-  { label: '家装房产', href: '/category/home', spacing: '0px' },
-  { label: '户外潮流', href: '/category/outdoors', spacing: '0px' },
-  { label: '健身', href: '/category/gym' },
-  { label: '手工', href: '/category/handmake' },
-  { label: '旅游出行', href: '/category/travel', spacing: '0px' },
-  { label: '三农', href: '/category/rural' },
-  { label: '亲子', href: '/category/parenting' },
-  { label: '健康', href: '/category/health' },
-  { label: '情感', href: '/category/emotion' },
-  { label: '生活兴趣', href: '/category/life_joy', spacing: '0px' },
-  { label: '生活经验', href: '/category/life_experience', spacing: '0px' },
-  { label: '公益', href: '/category/love' },
-  { label: '超高清', href: '/category/uhd' },
-  { label: '视频播客', href: '/category/podcast', spacing: '0px' },
+  { label: '番剧', href: '//www.bilibili.com/anime/' },
+  { label: '电影', href: '//www.bilibili.com/movie/' },
+  { label: '国创', href: '//www.bilibili.com/guochuang/' },
+  { label: '电视剧', href: '//www.bilibili.com/tv/' },
+  { label: '综艺', href: '//www.bilibili.com/variety/' },
+  { label: '纪录片', href: '//www.bilibili.com/documentary/' },
+  { label: '动画', href: '//www.bilibili.com/c/douga/' },
+  { label: '游戏', href: '//www.bilibili.com/c/game/' },
+  { label: '鬼畜', href: '//www.bilibili.com/c/kichiku/' },
+  { label: '音乐', href: '//www.bilibili.com/c/music/' },
+  { label: '舞蹈', href: '//www.bilibili.com/c/dance/' },
+  { label: '影视', href: '//www.bilibili.com/c/cinephile/' },
+  { label: '娱乐', href: '//www.bilibili.com/c/ent/' },
+  { label: '知识', href: '//www.bilibili.com/c/knowledge/' },
+  { label: '科技数码', href: '//www.bilibili.com/c/tech/', spacing: '0px' },
+  { label: '资讯', href: '//www.bilibili.com/c/information/' },
+  { label: '美食', href: '//www.bilibili.com/c/food/' },
+  { label: '小剧场', href: '//www.bilibili.com/c/shortplay/' },
+  { label: '汽车', href: '//www.bilibili.com/c/car' },
+  { label: '时尚美妆', href: '//www.bilibili.com/c/fashion/', spacing: '0px' },
+  { label: '体育运动', href: '//www.bilibili.com/c/sports/', spacing: '0px' },
+  { label: '动物', href: '//www.bilibili.com/c/animal/' },
+  { label: 'vlog', href: '//www.bilibili.com/c/vlog/', spacing: '0px' },
+  { label: '绘画', href: '//www.bilibili.com/c/painting/' },
+  { label: '人工智能', href: '//www.bilibili.com/c/ai/', spacing: '0px' },
+  { label: '家装房产', href: '//www.bilibili.com/c/home/', spacing: '0px' },
+  { label: '户外潮流', href: '//www.bilibili.com/c/outdoors/', spacing: '0px' },
+  { label: '健身', href: '//www.bilibili.com/c/gym/' },
+  { label: '手工', href: '//www.bilibili.com/c/handmake/' },
+  { label: '旅游出行', href: '//www.bilibili.com/c/travel/', spacing: '0px' },
+  { label: '三农', href: '//www.bilibili.com/c/rural/' },
+  { label: '亲子', href: '//www.bilibili.com/c/parenting/' },
+  { label: '健康', href: '//www.bilibili.com/c/health/' },
+  { label: '情感', href: '//www.bilibili.com/c/emotion/' },
+  { label: '生活兴趣', href: '//www.bilibili.com/c/life_joy/', spacing: '0px' },
+  { label: '生活经验', href: '//www.bilibili.com/c/life_experience/', spacing: '0px' },
+  { label: '公益', href: '//love.bilibili.com' },
+  { label: '超高清', href: '//www.bilibili.com/blackboard/era/Vp41b8bsU9Wkog3X.html' },
+  { label: '视频播客', href: '//www.bilibili.com/blackboard/era/jpyPhRRrMn3fmZ2B.html', spacing: '0px' },
 ];
 
 const channelRightLinks = [
@@ -326,14 +326,16 @@ export default function Header() {
           <div className="right-channel-container">
             <div className="channel-items__left">
               {channelLinks.map((link) => (
-                <Link
+                <a
                   key={link.label}
                   href={link.href}
                   className="channel-link"
                   style={{ letterSpacing: link.spacing || '2px' }}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
               <div id="channel-entry-more" className="channel-entry-more__link">
                 <span>更多</span>

@@ -326,22 +326,25 @@ input, textarea {
 /* ====== B站头部 ====== */
 .bili-header {
   background: var(--bg1);
-  box-shadow: var(--shadow-header);
-  position: sticky;
-  top: 0;
-  z-index: 50;
   min-width: 1100px;
 }
 
 .bili-header__bar {
+  position: sticky;
+  top: 0;
+  z-index: 1002;
   height: var(--header-height);
+  width: 100%;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
+  box-sizing: border-box;
+  background: var(--bg1);
+  box-shadow: var(--shadow-header);
+  min-width: 1100px;
 }
 
 /* 左侧导航 */
@@ -431,7 +434,7 @@ input, textarea {
 /* 中间搜索框 */
 .center-search-container {
   flex: 1;
-  max-width: 420px;
+  max-width: 522px;
   position: relative;
 }
 
@@ -445,10 +448,11 @@ input, textarea {
   display: flex;
   align-items: center;
   border: 1px solid var(--line_regular);
-  background: var(--bg2);
+  background: var(--graph_bg_thin);
   overflow: hidden;
   transition: all var(--transition-fast);
   border-radius: 8px;
+  height: 38px;
 }
 
 .center-search__bar form:hover,
@@ -462,12 +466,31 @@ input, textarea {
   display: flex;
   align-items: center;
   position: relative;
+  height: 100%;
+}
+
+.nav-search-input-placeholder {
+  position: absolute;
+  left: 12px;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.placeholder-text {
+  font-size: var(--v_fs_4);
+  color: var(--text3);
+  white-space: nowrap;
 }
 
 .nav-search-input {
   width: 100%;
   padding: 0 12px;
-  height: 36px;
+  height: 100%;
   border: none;
   background: transparent;
   font-size: var(--v_fs_4);
@@ -498,16 +521,18 @@ input, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 36px;
+  width: 42px;
+  height: 38px;
   cursor: pointer;
-  color: var(--text3);
-  transition: all var(--transition-fast);
+  color: white;
+  background: var(--brand_pink);
+  transition: background var(--transition-fast);
   flex-shrink: 0;
+  border-radius: 0 8px 8px 0;
 }
 
 .nav-search-btn:hover {
-  background: var(--bg-hover);
+  background: var(--Pi4);
   color: var(--text1);
 }
 
@@ -536,7 +561,7 @@ input, textarea {
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 0;
+  margin-left: 10px;
   flex-shrink: 0;
 }
 
@@ -546,10 +571,13 @@ input, textarea {
 
 .right-entry__outside {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 0 8px;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 6px;
   height: var(--header-height);
+  min-width: 50px;
   color: var(--text2);
   font-size: var(--v_fs_5);
   transition: color var(--transition-fast);
@@ -564,11 +592,44 @@ input, textarea {
 .right-entry-icon {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
 }
+
 
 .right-entry-text {
   font-size: var(--v_fs_6);
   white-space: nowrap;
+  line-height: 1;
+}
+
+/* go-login-btn 与其他 right-entry__outside 一样是竖向容器，header-login-entry 充当"图标" */
+.go-login-btn {
+  min-width: 50px;
+}
+
+/* 登录按钮 - 粉色圆形 */
+.header-login-entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--brand_pink);
+  color: white;
+  font-size: var(--v_fs_4);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.go-login-btn:hover .header-login-entry {
+  background: var(--Pi4);
 }
 
 /* 头像区域 */
@@ -751,31 +812,40 @@ input, textarea {
 .bili-header__channel {
   background: var(--bg1);
   border-bottom: 1px solid var(--line_light);
-  padding: 0;
+  width: 100%;
 }
 
 .bili-header__channel-inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 20px;
   display: flex;
   align-items: center;
-  height: 44px;
-  gap: 20px;
+  height: 120px;
+  margin: 0 auto;
+  padding: 0 var(--layout-padding);
+  max-width: calc(1980px + 2 * var(--layout-padding));
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .channel-icons {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 8px;
   flex-shrink: 0;
+  padding-right: 12px;
+  border-right: 1px solid var(--line_light);
+  align-self: stretch;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .channel-icons__item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   text-decoration: none;
   color: var(--text2);
   font-size: 12px;
@@ -787,9 +857,9 @@ input, textarea {
 }
 
 .icon-bg {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -800,28 +870,34 @@ input, textarea {
 }
 
 .icon-bg__popular {
-  background: linear-gradient(135deg, #00AEEC, #66DEFF);
+  background: linear-gradient(135deg, #FF8C00, #FFB347);
 }
 
 .icon-title {
-  font-size: 11px;
-  color: var(--text3);
+  font-size: 12px;
+  color: var(--text2);
 }
 
 .right-channel-container {
   flex: 1;
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   overflow: hidden;
 }
 
 .channel-items__left {
-  display: flex;
+  flex: 1;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+  overflow: hidden;
+  border-right: 1px solid var(--line_regular);
+  padding: 8px 30px 8px 0;
   align-items: center;
-  gap: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
 .channel-items__left::-webkit-scrollbar {
@@ -829,77 +905,76 @@ input, textarea {
 }
 
 .channel-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 12px;
-  height: 44px;
+  display: inline-block;
+  box-sizing: content-box;
+  padding: 0 10px;
+  height: 30px;
+  line-height: 30px;
   color: var(--text2);
-  font-size: var(--v_fs_5);
+  font-size: 14px;
   white-space: nowrap;
-  transition: color var(--transition-fast);
   text-decoration: none;
-  letter-spacing: 2px;
+  text-align: center;
+  border: 1px solid var(--line_light);
+  border-radius: 6px;
+  background-color: var(--graph_bg_thin);
+  transition: background-color 0.3s, color 0.3s;
+  margin: 2px 3px;
 }
 
 .channel-link:hover {
-  color: var(--text1);
+  color: var(--brand_blue);
+  border-color: var(--line_regular);
+  background-color: var(--bg1);
 }
 
 /* 右侧频道链接 - 匹配B站 channel-items__right */
 .channel-items__right {
-  grid-column: span 1;
-  grid-row-gap: 10px;
-  grid-auto-flow: column;
   display: grid;
-  grid-template-rows: repeat(2, 1fr);
-  width: 168px;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 30px);
+  gap: 10px;
   flex-shrink: 0;
-}
-
-@media (min-width: 2200px) {
-  .channel-items__right {
-    width: 258px;
-  }
-}
-
-@media (min-width: 1701px) and (max-width: 2199.9px) {
-  .channel-items__right {
-    width: 258px;
-  }
-}
-
-@media (min-width: 1367px) and (max-width: 1700.9px) {
-  .channel-items__right {
-    width: 240px;
-  }
-}
-
-@media (min-width: 1100px) and (max-width: 1366.9px) {
-  .channel-items__right {
-    width: 230px;
-  }
+  padding-left: 12px;
+  align-self: center;
 }
 
 .channel-link__right {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  height: 100%;
+  gap: 4px;
+  padding: 0 8px;
+  height: 30px;
   color: var(--text2);
-  text-align: center;
-  font-weight: 400;
   font-size: 14px;
   text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--line_light);
+  border-radius: 6px;
+  background-color: var(--graph_bg_thin);
   transition: background-color 0.3s, color 0.3s;
 }
 
 .channel-link__right .side-icon {
-  margin-right: 4px;
-  width: 20px;
-  height: 20px;
-  fill: var(--text2);
-  transition: fill 0.3s;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.channel-link__right:hover {
+  color: var(--brand_blue);
+  border-color: var(--brand_blue);
+}
+
+.channel-link__right:hover .side-icon {
+  fill: var(--brand_blue);
+}
+
+
+.channel-link__right .side-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .channel-link__right:hover {
@@ -1198,7 +1273,7 @@ input, textarea {
 
 /* ====== B站轮播图 - 匹配 recommended-swipe 实际结构 ====== */
 .recommended-swipe {
-  --cover-radio: 56.25%;
+  --cover-radio: 72%;
   grid-column: 1/3;
   grid-row: 1/3;
 }

@@ -205,17 +205,14 @@ export default function Header() {
 
         {/* 右侧导航 */}
         <ul className="right-entry">
-          <li className="right-entry-item">
-            <li className="v-popover-wrap">
+          <li className="right-entry-item v-popover-wrap">
               <div className="right-entry__outside go-login-btn">
                 <div className="header-login-entry">
                   <span>登录</span>
                 </div>
               </div>
-            </li>
           </li>
-          <li className="right-entry-item">
-            <li className="v-popover-wrap">
+          <li className="right-entry-item v-popover-wrap">
               <a href="//account.bilibili.com/big" target="_blank" className="right-entry__outside right-entry--vip">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="right-entry-icon">
                   <path fillRule="evenodd" clipRule="evenodd" d="M10 1C5.02955 1 1 5.02955 1 10C1 14.9705 5.02955 19 10 19C14.9705 19 19 14.9705 19 10C19 5.02955 14.9705 1 10 1ZM10.0006 2.63614C14.0612 2.63614 17.3642 5.93996 17.3642 9.99977C17.3642 14.0604 14.0612 17.3634 10.0006 17.3634C5.93996 17.3634 2.63696 14.0604 2.63696 9.99977C2.63696 5.93996 5.93996 2.63614 10.0006 2.63614Z" fill="currentColor"/>

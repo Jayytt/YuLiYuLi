@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 
 interface VideoCardProps {
   id: number;
@@ -40,15 +43,58 @@ function formatDate(dateStr?: string): string {
 }
 
 export default function VideoCard({ id, title, coverUrl, userName, viewCount, danmakuCount, duration, createdAt }: VideoCardProps) {
+  const [isHovering, setIsHovering] = useState(false);
+  const [watchLaterAdded, setWatchLaterAdded] = useState(false);
+  const [showNoInterest, setShowNoInterest] = useState(false);
+
+  const handleWatchLater = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWatchLaterAdded(true);
+    setTimeout(() => setWatchLaterAdded(false), 2000);
+  };
+
+  const handleNoInterest = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowNoInterest(true);
+  };
+
+  if (showNoInterest) {
+    return (
+      <div className="bili-video-card is-rcmd" style={{ '--cover-radio': '56.25%' } as React.CSSProperties}>
+        <div className="bili-video-card__wrap">
+          <div className="bili-video-card__no-interest">
+            <div className="no-interest-panel">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="no-interest-panel__icon">
+                <circle cx="18" cy="18" r="16" stroke="var(--line_regular)" strokeWidth="1.5" />
+                <path d="M12 18h12" stroke="var(--text3)" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+              <p className="no-interest-panel__title">将减少此类内容推荐</p>
+              <button className="no-interest-panel__undo" onClick={() => setShowNoInterest(false)}>
+                撤销
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bili-video-card is-rcmd" style={{ '--cover-radio': '56.25%' } as React.CSSProperties}>
+    <div
+      className="bili-video-card is-rcmd enable-no-interest"
+      style={{ '--cover-radio': '56.25%' } as React.CSSProperties}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
       <div className="bili-video-card__wrap">
         <Link href={`/video/${id}`} className="bili-video-card__image--link">
           <div className="bili-video-card__image">
             <div className="bili-video-card__image--wrap">
               {coverUrl ? (
                 <picture className="v-img bili-video-card__cover">
-                  <img src={coverUrl} alt={title} loading="lazy" />
+                  <img src={coverUrl} alt={title} loading="lazy" className="bili-video-card__img" />
                 </picture>
               ) : (
                 <div className="bili-video-card__cover--placeholder">
@@ -60,6 +106,21 @@ export default function VideoCard({ id, title, coverUrl, userName, viewCount, da
                 </div>
               )}
             </div>
+
+            {/* 稍后再看按钮 - hover时显示 */}
+            <div className={`bili-video-card__watch-later${isHovering ? ' visible' : ''}`} onClick={handleWatchLater}>
+              {watchLaterAdded ? (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M3.75 9l3.75 3.75 7.5-7.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5ZM9.75 5.25C9.75 4.83579 9.41421 4.5 9 4.5C8.58579 4.5 8.25 4.83579 8.25 5.25V9C8.25 9.19891 8.32902 9.38968 8.46967 9.53033L10.7197 11.7803C11.0126 12.0732 11.4874 12.0732 11.7803 11.7803C12.0732 11.4874 12.0732 11.0126 11.7803 10.7197L9.75 8.68934V5.25Z" fill="white" />
+                </svg>
+              )}
+              <span>{watchLaterAdded ? '已添加' : '稍后再看'}</span>
+            </div>
+
             <div className="bili-video-card__mask">
               <div className="bili-video-card__stats">
                 <div className="bili-video-card__stats--left">
@@ -84,9 +145,15 @@ export default function VideoCard({ id, title, coverUrl, userName, viewCount, da
             </div>
           </div>
         </Link>
+
         <div className="bili-video-card__info">
           <div className="bili-video-card__info--right">
-            <div className="bili-video-card__info--no-interest" style={{ display: 'none' }}>
+            {/* 不感兴趣按钮 - hover时显示 */}
+            <div
+              className={`bili-video-card__info--no-interest${isHovering ? ' visible' : ''}`}
+              onClick={handleNoInterest}
+              title="不感兴趣"
+            >
               <svg className="bili-video-card__info--no-interest--icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <circle cx="9" cy="9" r="8" stroke="var(--text3)" strokeWidth="1.2" />
                 <path d="M6 9h6" stroke="var(--text3)" strokeWidth="1.2" strokeLinecap="round" />

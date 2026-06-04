@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import VideoCard from '@/components/VideoCard';
 import VideoCardSkeleton from '@/components/VideoCardSkeleton';
 import BannerCarousel from '@/components/BannerCarousel';
+import PaletteButton from '@/components/PaletteButton';
 
 const MOCK_VIDEOS = [
   { id: 1, title: '【4K】超治愈！日本京都樱花季漫步旅拍 | 春日限定', coverUrl: '', userName: '旅行小记', viewCount: 125800, danmakuCount: 3200, duration: 485, createdAt: '2024-12-01T10:00:00Z', likeCount: 8900 },
@@ -50,7 +51,7 @@ export default async function Home() {
         <div className="bili-feed4-layout">
           <div className="feed2">
             {/* 轮播区域 - 匹配B站 recommended-swipe 结构 */}
-            <div className="recommended-swipe" style={{ '--cover-radio': '56.25%' } as React.CSSProperties}>
+            <div className="recommended-swipe" style={{ '--cover-radio': '72%' } as React.CSSProperties}>
               <div className="recommended-swipe-core">
                 <div className="recommended-swipe-shim">
                   <div className="shim-card" />
@@ -109,16 +110,8 @@ export default async function Home() {
         </div>
       </main>
 
-      {/* 回到顶部 */}
-      <button
-        className="fixed bottom-8 right-8 w-10 h-10 bg-white rounded-full flex items-center justify-center hover:shadow-lg transition-all z-40"
-        style={{ boxShadow: 'var(--shadow-card)' }}
-        title="回到顶部"
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M8 13V3M3 7l5-5 5 5" stroke="var(--text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
+      {/* 右下角悬浮按钮区域 */}
+      <PaletteButton />
 
       {/* 页脚 */}
       <footer className="bg-[var(--bg1)] py-6 mt-8">

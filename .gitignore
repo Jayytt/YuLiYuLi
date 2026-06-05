@@ -34,3 +34,7 @@ Thumbs.db
 
 # Docker volumes
 docker/data/
+docker/cloudflared-config.yml
+
+# Public dirs (empty or runtime-generated)
+apps/*/public/

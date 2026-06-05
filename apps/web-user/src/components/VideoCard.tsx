@@ -125,15 +125,14 @@ export default function VideoCard({ id, title, coverUrl, userName, viewCount, da
               <div className="bili-video-card__stats">
                 <div className="bili-video-card__stats--left">
                   <span className="bili-video-card__stats--item">
-                    <svg className="bili-video-card__stats--icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12ZM12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5Z" fill="#ffffff" />
-                      <circle cx="12" cy="12" r="2" fill="#ffffff" />
+                    <svg className="bili-video-card__stats--icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path d="M3.75 3.75v10.5l9-5.25-9-5.25z" fill="#ffffff" />
                     </svg>
                     <span className="bili-video-card__stats--text">{formatCount(viewCount)}</span>
                   </span>
                   <span className="bili-video-card__stats--item">
-                    <svg className="bili-video-card__stats--icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M2 6H13M2 12H16M2 18H10M18 18C18 19.1046 17.1046 20 16 20C14.8954 20 14 19.1046 14 18C14 16.8954 14.8954 16 16 16C17.1046 16 18 16.8954 18 18Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+                    <svg className="bili-video-card__stats--icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path d="M1.5 3.75h10.5v1.5H1.5v-1.5zm0 3.75h7.5v1.5H1.5v-1.5zm0 3.75h4.5v1.5H1.5v-1.5zm14.25 1.5c.69 0 1.25-.56 1.25-1.25s-.56-1.25-1.25-1.25-1.25.56-1.25 1.25.56 1.25 1.25 1.25z" fill="#ffffff" />
                     </svg>
                     <span className="bili-video-card__stats--text">{formatCount(danmakuCount)}</span>
                   </span>

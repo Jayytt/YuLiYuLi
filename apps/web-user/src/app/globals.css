@@ -2848,3 +2848,100 @@ input, textarea {
     display: none;
   }
 }
+
+/* ====== 稍后再看按钮 ====== */
+.bili-video-card__watch-later {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  z-index: 2;
+  user-select: none;
+}
+
+.bili-video-card__watch-later.visible {
+  opacity: 1;
+}
+
+.bili-video-card__watch-later:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ====== 不感兴趣按钮 ====== */
+.bili-video-card__info--no-interest {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.bili-video-card__info--no-interest.visible {
+  opacity: 1;
+}
+
+.bili-video-card__info--no-interest:hover .bili-video-card__info--no-interest--icon circle,
+.bili-video-card__info--no-interest:hover .bili-video-card__info--no-interest--icon path {
+  stroke: var(--text1);
+}
+
+/* 不感兴趣面板 */
+.bili-video-card__no-interest {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg2);
+  border-radius: var(--radius-md);
+  z-index: 3;
+}
+
+.no-interest-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.no-interest-panel__title {
+  font-size: 13px;
+  color: var(--text3);
+  margin: 0;
+}
+
+.no-interest-panel__undo {
+  font-size: 12px;
+  color: var(--brand_blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+
+.no-interest-panel__undo:hover {
+  text-decoration: underline;
+}
+
+/* ====== floor-single-card (全宽楼层) ====== */
+.floor-single-card {
+  grid-column: 1 / -1;
+  margin: 8px 0;
+}

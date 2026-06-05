@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ==================== Infrastructure ====================
 
@@ -12,7 +10,7 @@ services:
     ports:
       - "${MYSQL_PORT}:3306"
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
       - ./init/mysql:/docker-entrypoint-initdb.d
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
@@ -25,7 +23,7 @@ services:
     ports:
       - "${REDIS_PORT}:6379"
     volumes:
-      - ./data/redis:/data
+      - redis-data:/data
     networks:
       - yuliyuli
 
@@ -35,7 +33,7 @@ services:
     ports:
       - "${MONGODB_PORT}:27017"
     volumes:
-      - ./data/mongodb:/data/db
+      - mongodb-data:/data/db
     networks:
       - yuliyuli
 
@@ -45,12 +43,16 @@ services:
     environment:
       MODE: standalone
       NACOS_AUTH_ENABLE: 'true'
+      NACOS_AUTH_TOKEN: 'eXVsaXl1bGlfbmFjb3NfYXV0aF90b2tlbl9rZXlfMzJieXRlcw=='
+      NACOS_AUTH_IDENTITY_KEY: 'yuliyuli'
+      NACOS_AUTH_IDENTITY_VALUE: 'yuliyuli'
       SPRING_DATASOURCE_PLATFORM: mysql
       MYSQL_SERVICE_HOST: mysql
       MYSQL_SERVICE_PORT: 3306
       MYSQL_SERVICE_DB_NAME: nacos
       MYSQL_SERVICE_USER: root
       MYSQL_SERVICE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_SERVICE_DB_PARAM: 'characterEncoding=utf8&connectTimeout=10000&socketTimeout=30000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true'
     ports:
       - "${NACOS_PORT}:8848"
       - "9848:9848"
@@ -69,7 +71,7 @@ services:
     ports:
       - "${ELASTICSEARCH_PORT}:9200"
     volumes:
-      - ./data/elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - yuliyuli
 
@@ -85,7 +87,7 @@ services:
   rocketmq-broker:
     image: apache/rocketmq:5.1.4
     container_name: yuliyuli-rocketmq-broker
-    command: sh mqbroker -n rocketmq-namesrv:9876 --enable-controller
+    command: sh mqbroker -n rocketmq-namesrv:9876
     ports:
       - "10911:10911"
     depends_on:
@@ -106,6 +108,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       - nacos
@@ -129,6 +132,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       - mysql
@@ -154,6 +158,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
       VIDEO_UPLOAD_DIR: ${VIDEO_UPLOAD_DIR}
       VIDEO_COVER_DIR: ${VIDEO_COVER_DIR}
@@ -180,6 +185,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
     depends_on:
       - mongodb
@@ -206,6 +212,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
     depends_on:
       - mysql
       - redis
@@ -228,6 +235,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
     depends_on:
       - elasticsearch
@@ -254,6 +262,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
     depends_on:
       - mysql
@@ -278,6 +287,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
     depends_on:
       - mongodb
       - redis
@@ -302,6 +312,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
     depends_on:
       - mysql
       - redis
@@ -326,6 +337,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
     depends_on:
       - mysql
       - redis
@@ -348,6 +360,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       ROCKETMQ_NAME-SERVER: ${ROCKETMQ_NAME-SERVER}
     depends_on:
       - mongodb
@@ -374,6 +387,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       - mysql
@@ -399,6 +413,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
     depends_on:
       - mysql
       - redis
@@ -423,6 +438,7 @@ services:
       SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR: ${SPRING_CLOUD_NACOS_DISCOVERY_SERVER-ADDR}
       SPRING_CLOUD_NACOS_DISCOVERY_USERNAME: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME}
       SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD}
+      SPRING_CONFIG_IMPORT: ${SPRING_CONFIG_IMPORT}
     depends_on:
       - mysql
       - redis
@@ -433,9 +449,7 @@ services:
   # ==================== Frontend Applications ====================
 
   web-user:
-    build:
-      context: ../apps/web-user
-      dockerfile: ../../docker/Dockerfile.node
+    image: docker-web-user:latest
     container_name: yuliyuli-web-user
     ports:
       - "3000:3000"
@@ -447,9 +461,7 @@ services:
       - yuliyuli
 
   web-admin:
-    build:
-      context: ../apps/web-admin
-      dockerfile: ../../docker/Dockerfile.node
+    image: docker-web-admin:latest
     container_name: yuliyuli-web-admin
     ports:
       - "3001:3000"
@@ -459,6 +471,12 @@ services:
       - gateway
     networks:
       - yuliyuli
+
+volumes:
+  mysql-data:
+  redis-data:
+  mongodb-data:
+  elasticsearch-data:
 
 networks:
   yuliyuli:

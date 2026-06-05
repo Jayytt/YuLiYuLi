@@ -1292,7 +1292,7 @@ input, textarea {
   grid-column: span 2;
   grid-row: span 2;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px 16px;
+  grid-gap: 20px;
 }
 
 .recommended-swipe-shim .shim-card {
@@ -1435,6 +1435,24 @@ input, textarea {
   justify-content: center;
   border-radius: 6px;
   overflow: hidden;
+  position: relative;
+}
+
+.carousel-cover {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.carousel-area-img:hover .carousel-img {
+  transform: scale(1.03);
 }
 
 .carousel-item {
@@ -1741,7 +1759,7 @@ input, textarea {
   padding: 0 var(--layout-padding);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-gap: 20px 16px;
+  grid-gap: 20px;
 }
 
 /* feed2: 轮播区域占据2列×2行 - 匹配B站实际结构 */
@@ -1753,7 +1771,7 @@ input, textarea {
 .bili-video-card__grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 20px 16px;
+  gap: 20px;
 }
 
 .bili-feed-card {
@@ -2692,6 +2710,83 @@ input, textarea {
 }
 
 /* 响应式 */
+/* ====== 推荐楼层卡片 - 匹配B站 floor-aside 结构 ====== */
+.recommended-container_floor-aside {
+  grid-column: 1 / -1;
+  margin: 16px 0;
+}
+
+.floor-card {
+  background: var(--bg1);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.floor-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+
+.floor-card__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.floor-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.floor-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text1);
+  margin: 0;
+}
+
+.floor-card__more {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text3);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.floor-card__more:hover {
+  color: var(--brand_blue);
+}
+
+.floor-card__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  padding: 0 20px 20px;
+}
+
+.floor-card__item {
+  min-width: 0;
+}
+
+@media (max-width: 1365.9px) {
+  .floor-card__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1099.9px) {
+  .floor-card__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 1400px) {
   .bili-video-card__grid {
     grid-template-columns: repeat(4, 1fr);

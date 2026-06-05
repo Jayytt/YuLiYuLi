@@ -3,6 +3,7 @@ import VideoCard from '@/components/VideoCard';
 import VideoCardSkeleton from '@/components/VideoCardSkeleton';
 import BannerCarousel from '@/components/BannerCarousel';
 import PaletteButton from '@/components/PaletteButton';
+import FloorCard from '@/components/FloorCard';
 
 const MOCK_VIDEOS = [
   { id: 1, title: '【4K】超治愈！日本京都樱花季漫步旅拍 | 春日限定', coverUrl: '', userName: '旅行小记', viewCount: 125800, danmakuCount: 3200, duration: 485, createdAt: '2024-12-01T10:00:00Z', likeCount: 8900 },
@@ -25,6 +26,30 @@ const MOCK_VIDEOS = [
   { id: 18, title: '吉他弹唱《晴天》周杰伦｜完整版教学', coverUrl: '', userName: '吉他教室', viewCount: 289000, danmakuCount: 6700, duration: 780, createdAt: '2024-08-20T10:00:00Z', likeCount: 21000 },
   { id: 19, title: '养猫新手必看！这10个错误99%的人都犯过', coverUrl: '', userName: '宠物医生', viewCount: 198000, danmakuCount: 4500, duration: 600, createdAt: '2024-08-15T08:00:00Z', likeCount: 14000 },
   { id: 20, title: '【ASMR】雨声+翻书声，帮你快速入睡', coverUrl: '', userName: '助眠频道', viewCount: 423000, danmakuCount: 9200, duration: 3600, createdAt: '2024-08-10T23:00:00Z', likeCount: 35000 },
+];
+
+const FLOOR_SECTIONS = [
+  {
+    id: 1,
+    title: '番剧推荐',
+    icon: 'anime',
+    color: '#FB7299',
+    videos: MOCK_VIDEOS.slice(0, 5),
+  },
+  {
+    id: 2,
+    title: '国创推荐',
+    icon: 'guochuang',
+    color: '#00AEEC',
+    videos: MOCK_VIDEOS.slice(5, 10),
+  },
+  {
+    id: 3,
+    title: '综艺推荐',
+    icon: 'variety',
+    color: '#FF6699',
+    videos: MOCK_VIDEOS.slice(10, 15),
+  },
 ];
 
 async function getVideos() {
@@ -70,7 +95,7 @@ export default async function Home() {
 
           {/* 视频卡片 - 每个视频一个feed-card，与feed2同级 */}
           {videos && videos.length > 0 ? (
-            videos.map((video: any) => (
+            videos.map((video: any, index: number) => (
               <div key={video.id} className="feed-card">
                 <div className="bili-feed-card">
                   <VideoCard
@@ -85,6 +110,31 @@ export default async function Home() {
                     likeCount={video.likeCount}
                   />
                 </div>
+                {/* 在第5个视频后插入番剧推荐，在第10个视频后插入国创推荐 */}
+                {index === 4 && FLOOR_SECTIONS[0] && (
+                  <FloorCard
+                    title={FLOOR_SECTIONS[0].title}
+                    icon={FLOOR_SECTIONS[0].icon}
+                    color={FLOOR_SECTIONS[0].color}
+                    videos={FLOOR_SECTIONS[0].videos}
+                  />
+                )}
+                {index === 9 && FLOOR_SECTIONS[1] && (
+                  <FloorCard
+                    title={FLOOR_SECTIONS[1].title}
+                    icon={FLOOR_SECTIONS[1].icon}
+                    color={FLOOR_SECTIONS[1].color}
+                    videos={FLOOR_SECTIONS[1].videos}
+                  />
+                )}
+                {index === 14 && FLOOR_SECTIONS[2] && (
+                  <FloorCard
+                    title={FLOOR_SECTIONS[2].title}
+                    icon={FLOOR_SECTIONS[2].icon}
+                    color={FLOOR_SECTIONS[2].color}
+                    videos={FLOOR_SECTIONS[2].videos}
+                  />
+                )}
               </div>
             ))
           ) : videos === null ? (

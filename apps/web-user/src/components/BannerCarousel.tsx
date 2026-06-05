@@ -9,7 +9,7 @@ interface BannerItem {
   desc: string;
   btnText: string;
   btnLink: string;
-  gradient: string;
+  imageUrl: string;
 }
 
 const banners: BannerItem[] = [
@@ -19,7 +19,7 @@ const banners: BannerItem[] = [
     desc: '你感兴趣的视频都在这里',
     btnText: '立即体验',
     btnLink: '/',
-    gradient: 'linear-gradient(135deg, #FF6699 0%, #FF9DB5 30%, #66DEFF 70%, #00AEEC 100%)',
+    imageUrl: 'https://i0.hdslb.com/bfs/new_dyn/a]b3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3.png',
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const banners: BannerItem[] = [
     desc: '一月新番开播，追番不迷路',
     btnText: '去看看',
     btnLink: '/category/anime',
-    gradient: 'linear-gradient(135deg, #AC6DFF 0%, #DA8FFF 30%, #FF8FBC 70%, #FF6699 100%)',
+    imageUrl: 'https://i0.hdslb.com/bfs/new_dyn/b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4.png',
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ const banners: BannerItem[] = [
     desc: '分享你的创意，赢取丰厚奖励',
     btnText: '了解详情',
     btnLink: '/',
-    gradient: 'linear-gradient(135deg, #0EB350 0%, #88CC24 30%, #FFCC00 70%, #FA9600 100%)',
+    imageUrl: 'https://i0.hdslb.com/bfs/new_dyn/c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5.png',
   },
   {
     id: 4,
@@ -43,7 +43,7 @@ const banners: BannerItem[] = [
     desc: '聆听好音乐，发现新世界',
     btnText: '进入专区',
     btnLink: '/category/music',
-    gradient: 'linear-gradient(135deg, #6188FF 0%, #8FA8FF 30%, #FFB6C1 70%, #FF6699 100%)',
+    imageUrl: 'https://i0.hdslb.com/bfs/new_dyn/d6d6d6d6d6d6d6d6d6d6d6d6d6d6d6d6.png',
   },
   {
     id: 5,
@@ -51,7 +51,7 @@ const banners: BannerItem[] = [
     desc: '热门游戏实况，等你来围观',
     btnText: '马上看看',
     btnLink: '/category/game',
-    gradient: 'linear-gradient(135deg, #14C4BF 0%, #5FD9D6 30%, #87CEEB 70%, #6188FF 100%)',
+    imageUrl: 'https://i0.hdslb.com/bfs/new_dyn/e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7.png',
   },
 ];
 
@@ -103,7 +103,17 @@ export default function BannerCarousel() {
                   className={`vui_carousel__slide${isActive ? ' vui_carousel__slide--active' : ''}${isPrev ? ' vui_carousel__slide--prev' : ''}${isNext ? ' vui_carousel__slide--next' : ''}`}
                 >
                   <div className="carousel-area">
-                    <div className="carousel-area-img" style={{ background: banner.gradient }}>
+                    <div className="carousel-area-img">
+                      <picture className="v-img carousel-cover">
+                        <source srcSet={banner.imageUrl.replace('.png', '.avif')} type="image/avif" />
+                        <source srcSet={banner.imageUrl.replace('.png', '.webp')} type="image/webp" />
+                        <img
+                          src={banner.imageUrl}
+                          alt={banner.title}
+                          loading="lazy"
+                          className="carousel-img"
+                        />
+                      </picture>
                       <Link href={banner.btnLink} className="carousel-item">
                         <h2 className="carousel-item__title">{banner.title}</h2>
                         <p className="carousel-item__desc">{banner.desc}</p>

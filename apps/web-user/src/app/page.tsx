@@ -96,46 +96,54 @@ export default async function Home() {
           {/* 视频卡片 - 每个视频一个feed-card，与feed2同级 */}
           {videos && videos.length > 0 ? (
             videos.map((video: any, index: number) => (
-              <div key={video.id} className="feed-card">
-                <div className="bili-feed-card">
-                  <VideoCard
-                    id={video.id}
-                    title={video.title}
-                    coverUrl={video.coverUrl}
-                    userName={video.userName}
-                    viewCount={video.viewCount}
-                    danmakuCount={video.danmakuCount}
-                    duration={video.duration}
-                    createdAt={video.createdAt}
-                    likeCount={video.likeCount}
-                  />
+              <>
+                <div key={video.id} className="feed-card">
+                  <div className="bili-feed-card">
+                    <VideoCard
+                      id={video.id}
+                      title={video.title}
+                      coverUrl={video.coverUrl}
+                      userName={video.userName}
+                      viewCount={video.viewCount}
+                      danmakuCount={video.danmakuCount}
+                      duration={video.duration}
+                      createdAt={video.createdAt}
+                      likeCount={video.likeCount}
+                    />
+                  </div>
                 </div>
-                {/* 在第5个视频后插入番剧推荐，在第10个视频后插入国创推荐 */}
+                {/* floor-single-card 是独立的grid item，与feed-card同级，横跨全部列 */}
                 {index === 4 && FLOOR_SECTIONS[0] && (
-                  <FloorCard
-                    title={FLOOR_SECTIONS[0].title}
-                    icon={FLOOR_SECTIONS[0].icon}
-                    color={FLOOR_SECTIONS[0].color}
-                    videos={FLOOR_SECTIONS[0].videos}
-                  />
+                  <div key={`floor-0`} className="floor-single-card">
+                    <FloorCard
+                      title={FLOOR_SECTIONS[0].title}
+                      icon={FLOOR_SECTIONS[0].icon}
+                      color={FLOOR_SECTIONS[0].color}
+                      videos={FLOOR_SECTIONS[0].videos}
+                    />
+                  </div>
                 )}
                 {index === 9 && FLOOR_SECTIONS[1] && (
-                  <FloorCard
-                    title={FLOOR_SECTIONS[1].title}
-                    icon={FLOOR_SECTIONS[1].icon}
-                    color={FLOOR_SECTIONS[1].color}
-                    videos={FLOOR_SECTIONS[1].videos}
-                  />
+                  <div key={`floor-1`} className="floor-single-card">
+                    <FloorCard
+                      title={FLOOR_SECTIONS[1].title}
+                      icon={FLOOR_SECTIONS[1].icon}
+                      color={FLOOR_SECTIONS[1].color}
+                      videos={FLOOR_SECTIONS[1].videos}
+                    />
+                  </div>
                 )}
                 {index === 14 && FLOOR_SECTIONS[2] && (
-                  <FloorCard
-                    title={FLOOR_SECTIONS[2].title}
-                    icon={FLOOR_SECTIONS[2].icon}
-                    color={FLOOR_SECTIONS[2].color}
-                    videos={FLOOR_SECTIONS[2].videos}
-                  />
+                  <div key={`floor-2`} className="floor-single-card">
+                    <FloorCard
+                      title={FLOOR_SECTIONS[2].title}
+                      icon={FLOOR_SECTIONS[2].icon}
+                      color={FLOOR_SECTIONS[2].color}
+                      videos={FLOOR_SECTIONS[2].videos}
+                    />
+                  </div>
                 )}
-              </div>
+              </>
             ))
           ) : videos === null ? (
             Array.from({ length: 10 }).map((_, i) => (

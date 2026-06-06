@@ -758,7 +758,24 @@ input, textarea {
   width: 100%;
   max-width: 2078px;
   margin: 0 auto;
-  padding: 0 56px;
+  padding: 0 64px;
+}
+
+.header-banner__inner .inner-logo {
+  display: block;
+  z-index: 1;
+  width: 180px;
+  height: 77.5px;
+  min-height: 60px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.header-banner__inner .logo-img {
+  display: block;
+  overflow: clip;
+  width: 162px;
+  height: 78px;
 }
 
 @media (min-width: 2200px) {
@@ -818,10 +835,10 @@ input, textarea {
 .bili-header__channel-inner {
   display: flex;
   align-items: center;
-  height: 120px;
+  height: 110px;
   margin: 0 auto;
-  padding: 0 var(--layout-padding);
-  max-width: calc(1980px + 2 * var(--layout-padding));
+  padding: 0 60px;
+  max-width: 2100px;
   gap: 12px;
   box-sizing: border-box;
   width: 100%;
@@ -891,12 +908,12 @@ input, textarea {
   flex: 1;
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 30px);
   grid-template-columns: repeat(12, 1fr);
   gap: 10px;
   overflow: hidden;
   border-right: 1px solid var(--line_regular);
-  padding: 8px 30px 8px 0;
+  padding: 0 30px 0 0;
   align-items: center;
 }
 
@@ -905,21 +922,21 @@ input, textarea {
 }
 
 .channel-link {
-  display: inline-block;
+  display: block;
   box-sizing: content-box;
   padding: 0 10px;
-  height: 30px;
-  line-height: 30px;
-  color: var(--text2);
+  height: 26px;
+  line-height: 26px;
+  color: var(--Ga6);
   font-size: 14px;
   white-space: nowrap;
   text-decoration: none;
   text-align: center;
+  letter-spacing: 2px;
   border: 1px solid var(--line_light);
   border-radius: 6px;
-  background-color: var(--graph_bg_thin);
+  background-color: var(--Ga0);
   transition: background-color 0.3s, color 0.3s;
-  margin: 2px 3px;
 }
 
 .channel-link:hover {

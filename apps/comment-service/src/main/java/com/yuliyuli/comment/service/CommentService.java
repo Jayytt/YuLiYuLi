@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface CommentService {
     CommentDTO send(CommentSendRequest request, Long userId, String userName, String userAvatar);
+
     List<CommentDTO> getCommentsByVideoId(Long videoId);
 }

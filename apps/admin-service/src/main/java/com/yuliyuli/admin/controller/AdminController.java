@@ -15,6 +15,9 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    /**
+     * 管理员登录认证
+     */
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AdminLoginRequest request) {
         AdminLoginResponse response = adminService.adminLogin(request.getUsername(), request.getPassword());
@@ -25,6 +28,9 @@ public class AdminController {
         ));
     }
 
+    /**
+     * 获取待审核视频列表
+     */
     @GetMapping("/video/list")
     public ResponseEntity<Map<String, Object>> getVideoList(
             @RequestParam(defaultValue = "1") Integer page,
@@ -38,6 +44,9 @@ public class AdminController {
         ));
     }
 
+    /**
+     * 审核视频（通过/拒绝）
+     */
     @PostMapping("/video/audit")
     public ResponseEntity<Map<String, Object>> auditVideo(@RequestBody VideoAuditRequest request) {
         adminService.auditVideo(request.getVideoId(), request.getStatus());
@@ -48,6 +57,9 @@ public class AdminController {
         ));
     }
 
+    /**
+     * 获取用户列表
+     */
     @GetMapping("/user/list")
     public ResponseEntity<Map<String, Object>> getUserList(
             @RequestParam(defaultValue = "1") Integer page,
@@ -61,6 +73,9 @@ public class AdminController {
         ));
     }
 
+    /**
+     * 切换用户封禁/解封状态
+     */
     @PostMapping("/user/toggle-status")
     public ResponseEntity<Map<String, Object>> toggleUserStatus(@RequestBody UserToggleRequest request) {
         adminService.toggleUserStatus(request.getUserId());
@@ -71,6 +86,9 @@ public class AdminController {
         ));
     }
 
+    /**
+     * 获取举报列表
+     */
     @GetMapping("/report/list")
     public ResponseEntity<Map<String, Object>> getReportList(
             @RequestParam(defaultValue = "1") Integer page,
@@ -84,6 +102,9 @@ public class AdminController {
         ));
     }
 
+    /**
+     * 处理举报
+     */
     @PostMapping("/report/handle")
     public ResponseEntity<Map<String, Object>> handleReport(@RequestBody ReportHandleRequest request) {
         adminService.handleReport(request.getReportId(), request.getStatus(), request.getHandlerId(), request.getNote());

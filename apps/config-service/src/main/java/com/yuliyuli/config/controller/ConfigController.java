@@ -17,6 +17,9 @@ public class ConfigController {
 
     private final ConfigService configService;
 
+    /**
+     * 获取轮播图列表
+     */
     @GetMapping("/banners")
     public ResponseEntity<Map<String, Object>> getBanners() {
         List<Banner> banners = configService.getBanners();
@@ -27,6 +30,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 创建轮播图
+     */
     @PostMapping("/banner")
     public ResponseEntity<Map<String, Object>> createBanner(@RequestBody Banner banner) {
         Banner created = configService.createBanner(banner);
@@ -37,6 +43,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 更新轮播图
+     */
     @PutMapping("/banner/{id}")
     public ResponseEntity<Map<String, Object>> updateBanner(@PathVariable Long id, @RequestBody Banner banner) {
         Banner updated = configService.updateBanner(id, banner);
@@ -47,6 +56,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 删除轮播图
+     */
     @DeleteMapping("/banner/{id}")
     public ResponseEntity<Map<String, Object>> deleteBanner(@PathVariable Long id) {
         configService.deleteBanner(id);
@@ -57,6 +69,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 获取站点配置
+     */
     @GetMapping("/site")
     public ResponseEntity<Map<String, Object>> getSiteConfig() {
         Map<String, String> config = configService.getSiteConfig();
@@ -67,6 +82,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 更新站点配置
+     */
     @PutMapping("/site")
     public ResponseEntity<Map<String, Object>> updateSiteConfig(@RequestBody Map<String, String> request) {
         String key = request.get("key");
@@ -82,6 +100,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 分页获取敏感词列表
+     */
     @GetMapping("/sensitive-word")
     public ResponseEntity<Map<String, Object>> getSensitiveWords(
             @RequestParam(defaultValue = "1") Integer page,
@@ -94,6 +115,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 添加敏感词
+     */
     @PostMapping("/sensitive-word")
     public ResponseEntity<Map<String, Object>> addSensitiveWord(@RequestBody Map<String, String> request) {
         String word = request.get("word");
@@ -108,6 +132,9 @@ public class ConfigController {
         ));
     }
 
+    /**
+     * 删除敏感词
+     */
     @DeleteMapping("/sensitive-word/{id}")
     public ResponseEntity<Map<String, Object>> deleteSensitiveWord(@PathVariable Long id) {
         configService.deleteSensitiveWord(id);

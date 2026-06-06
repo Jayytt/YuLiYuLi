@@ -25,6 +25,9 @@ public class SearchServiceImpl implements SearchService {
     private final VideoSearchMapper videoSearchMapper;
     private final ElasticsearchOperations elasticsearchOperations;
 
+    /**
+     * 使用Elasticsearch多字段匹配搜索视频并返回分页结果
+     */
     @Override
     public Map<String, Object> searchVideos(String keyword, int page, int size) {
         Query multiMatchQuery = MultiMatchQuery.of(m -> m
@@ -54,11 +57,17 @@ public class SearchServiceImpl implements SearchService {
         return result;
     }
 
+    /**
+     * 将视频文档保存到Elasticsearch索引
+     */
     @Override
     public void indexVideo(VideoDocument videoDocument) {
         videoSearchMapper.save(videoDocument);
     }
 
+    /**
+     * 根据关键词前缀匹配获取搜索建议列表
+     */
     @Override
     public List<String> getSearchSuggestions(String keyword) {
         Query prefixQuery = co.elastic.clients.elasticsearch._types.query_dsl.Query.of(q -> q
@@ -80,6 +89,9 @@ public class SearchServiceImpl implements SearchService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 将视频文档实体转换为搜索结果DTO
+     */
     private VideoSearchDTO toDTO(VideoDocument doc) {
         VideoSearchDTO dto = new VideoSearchDTO();
         dto.setVideoId(doc.getVideoId());

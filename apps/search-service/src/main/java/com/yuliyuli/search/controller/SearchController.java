@@ -15,6 +15,9 @@ import java.util.Map;
 public class SearchController {
     private final SearchService searchService;
 
+    /**
+     * 根据关键词搜索视频
+     */
     @GetMapping("/videos")
     public ResponseEntity<Map<String, Object>> searchVideos(
             @RequestParam String keyword,
@@ -27,6 +30,9 @@ public class SearchController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", result));
     }
 
+    /**
+     * 将视频文档写入Elasticsearch索引
+     */
     @PostMapping("/index")
     public ResponseEntity<Map<String, Object>> indexVideo(
             @RequestHeader("X-User-Id") Long userId,
@@ -35,6 +41,9 @@ public class SearchController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "索引成功", "data", ""));
     }
 
+    /**
+     * 根据关键词获取搜索建议
+     */
     @GetMapping("/suggest")
     public ResponseEntity<Map<String, Object>> getSearchSuggestions(@RequestParam String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {

@@ -13,6 +13,9 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
+    /**
+     * 查询所有顶级视频分类，按排序字段升序排列
+     */
     @Override
     public List<Category> listCategories() {
         return categoryMapper.selectList(

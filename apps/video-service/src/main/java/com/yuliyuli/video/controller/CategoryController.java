@@ -14,6 +14,9 @@ import java.util.Map;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    /**
+     * 获取视频分类列表
+     */
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> list() {
         List<Category> categories = categoryService.listCategories();

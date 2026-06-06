@@ -33,6 +33,9 @@ public class VideoServiceImpl implements VideoService {
     private static final String VIDEO_DETAIL_PREFIX = "video:detail:";
     private static final long VIDEO_DETAIL_TTL_MINUTES = 10;
 
+    /**
+     * 上传视频，保存视频信息并发送转码消息
+     */
     @Override
     public VideoDTO upload(VideoUploadRequest request, Long userId, String userName, String userAvatar) {
         Video video = new Video();
@@ -60,6 +63,9 @@ public class VideoServiceImpl implements VideoService {
         return toDTO(video);
     }
 
+    /**
+     * 根据视频ID获取视频详情，优先读取缓存并增加播放量
+     */
     @Override
     public VideoDTO getVideoById(Long videoId) {
         // Check cache first
@@ -100,6 +106,9 @@ public class VideoServiceImpl implements VideoService {
         return dto;
     }
 
+    /**
+     * 分页查询已审核视频列表，支持分类筛选和排序
+     */
     @Override
     public List<VideoDTO> listVideos(VideoQueryRequest request) {
         Page<Video> page = new Page<>(request.getPage(), request.getSize());
@@ -123,6 +132,9 @@ public class VideoServiceImpl implements VideoService {
         return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 获取指定用户已审核的视频列表
+     */
     @Override
     public List<VideoDTO> getUserVideos(Long userId) {
         List<Video> videos = videoMapper.selectList(
@@ -134,6 +146,9 @@ public class VideoServiceImpl implements VideoService {
         return videos.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 审核视频，更新视频状态并清除缓存
+     */
     @Override
     public void auditVideo(Long videoId, Integer status) {
         Video video = videoMapper.selectById(videoId);
@@ -146,6 +161,9 @@ public class VideoServiceImpl implements VideoService {
         redisTemplate.delete(VIDEO_DETAIL_PREFIX + videoId);
     }
 
+    /**
+     * 管理员分页查询视频列表，支持按状态筛选
+     */
     @Override
     public List<VideoDTO> adminListVideos(int page, int size, Integer status) {
         Page<Video> videoPage = new Page<>(page, size);
@@ -158,6 +176,9 @@ public class VideoServiceImpl implements VideoService {
         return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 将视频实体转换为DTO对象
+     */
     private VideoDTO toDTO(Video video) {
         VideoDTO dto = new VideoDTO();
         BeanUtils.copyProperties(video, dto);

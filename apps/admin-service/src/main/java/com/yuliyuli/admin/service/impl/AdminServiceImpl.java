@@ -58,7 +58,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * List videos for audit via video-service
+     * 通过视频服务获取待审核视频列表
      */
     @Override
     public Object getVideoList(Integer page, Integer size, Integer status) {
@@ -82,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * Approve/reject video via video-service
+     * 通过视频服务审核视频（通过/拒绝）
      */
     @Override
     public void auditVideo(Long videoId, Integer status) {
@@ -103,7 +103,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * List users via user-service
+     * 通过用户服务获取用户列表
      */
     @Override
     public Object getUserList(Integer page, Integer size, String keyword) {
@@ -127,7 +127,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * Toggle user ban/unban via user-service
+     * 通过用户服务切换用户封禁/解封状态
      */
     @Override
     public void toggleUserStatus(Long userId) {
@@ -148,7 +148,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * List reports
+     * 分页获取举报列表
      */
     @Override
     public Map<String, Object> getReportList(Integer page, Integer size, Integer status) {
@@ -171,7 +171,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * Process a report
+     * 处理举报
      */
     @Override
     public void handleReport(Long reportId, Integer status, Long handlerId, String note) {
@@ -192,6 +192,9 @@ public class AdminServiceImpl implements AdminService {
         reportMapper.updateById(report);
     }
 
+    /**
+     * 将管理员实体转换为DTO对象
+     */
     private AdminUserDTO toAdminUserDTO(AdminUser admin) {
         AdminUserDTO dto = new AdminUserDTO();
         dto.setId(admin.getId());

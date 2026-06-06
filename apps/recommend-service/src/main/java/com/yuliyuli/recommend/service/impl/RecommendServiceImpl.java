@@ -17,6 +17,9 @@ public class RecommendServiceImpl implements RecommendService {
     private static final String VIDEO_META_PREFIX = "video:meta:";
     private static final String CATEGORY_PREFIX = "hot:category:";
 
+    /**
+     * 分页获取推荐视频列表
+     */
     @Override
     public List<RecommendVideoDTO> getRecommendVideos(int page, int size) {
         long start = (long) page * size;
@@ -28,6 +31,9 @@ public class RecommendServiceImpl implements RecommendService {
         return fetchVideoMeta(videoIds);
     }
 
+    /**
+     * 分页获取指定分类的热门视频
+     */
     @Override
     public List<RecommendVideoDTO> getHotVideos(Long categoryId, int page, int size) {
         String key = CATEGORY_PREFIX + categoryId;
@@ -40,6 +46,9 @@ public class RecommendServiceImpl implements RecommendService {
         return fetchVideoMeta(videoIds);
     }
 
+    /**
+     * 记录视频观看行为并更新Redis中的热度数据和元信息
+     */
     @Override
     public void recordView(Long videoId, String title, String coverUrl,
                            String userName, Long viewCount, Long danmakuCount, Integer duration) {
@@ -59,12 +68,18 @@ public class RecommendServiceImpl implements RecommendService {
         redisTemplate.opsForHash().putAll(VIDEO_META_PREFIX + videoIdStr, meta);
     }
 
+    /**
+     * 将视频添加到指定分类的热门排行中
+     */
     @Override
     public void addVideoToCategory(Long categoryId, Long videoId, Double score) {
         String key = CATEGORY_PREFIX + categoryId;
         redisTemplate.opsForZSet().add(key, String.valueOf(videoId), score);
     }
 
+    /**
+     * 根据视频ID集合批量获取视频元信息并转换为DTO
+     */
     private List<RecommendVideoDTO> fetchVideoMeta(Collection<String> videoIds) {
         List<RecommendVideoDTO> result = new ArrayList<>();
         for (String videoId : videoIds) {
@@ -85,6 +100,9 @@ public class RecommendServiceImpl implements RecommendService {
         return result;
     }
 
+    /**
+     * 安全地将字符串解析为Long类型，解析失败返回0
+     */
     private Long parseLong(String value) {
         try {
             return Long.parseLong(value);

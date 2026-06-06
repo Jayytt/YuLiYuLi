@@ -36,7 +36,7 @@ public class ConfigServiceImpl implements ConfigService {
     private static final long BANNER_CACHE_TTL = 30; // minutes
 
     /**
-     * Get active banners (cached in Redis)
+     * 获取启用状态的轮播图列表（Redis缓存）
      */
     @Override
     public List<Banner> getBanners() {
@@ -67,7 +67,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Create banner
+     * 创建轮播图
      */
     @Override
     public Banner createBanner(Banner banner) {
@@ -77,7 +77,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Update banner
+     * 更新轮播图
      */
     @Override
     public Banner updateBanner(Long id, Banner banner) {
@@ -93,7 +93,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Delete banner
+     * 删除轮播图
      */
     @Override
     public void deleteBanner(Long id) {
@@ -107,7 +107,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Get site config as key-value map
+     * 获取站点配置（键值对形式）
      */
     @Override
     public Map<String, String> getSiteConfig() {
@@ -117,7 +117,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Update site config value by key
+     * 根据键更新站点配置值
      */
     @Override
     public void updateSiteConfig(String key, String value) {
@@ -135,7 +135,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Get sensitive words with pagination
+     * 分页获取敏感词列表
      */
     @Override
     public Map<String, Object> getSensitiveWords(Integer page, Integer size) {
@@ -154,7 +154,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Add sensitive word
+     * 添加敏感词
      */
     @Override
     public SensitiveWord addSensitiveWord(String word) {
@@ -179,7 +179,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * Delete sensitive word
+     * 删除敏感词
      */
     @Override
     public void deleteSensitiveWord(Long id) {
@@ -191,6 +191,9 @@ public class ConfigServiceImpl implements ConfigService {
         sensitiveWordMapper.deleteById(id);
     }
 
+    /**
+     * 清除轮播图Redis缓存
+     */
     private void invalidateBannerCache() {
         redisTemplate.delete(BANNER_CACHE_KEY);
     }

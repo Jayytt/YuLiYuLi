@@ -16,6 +16,9 @@ import java.util.Map;
 public class CommentController {
     private final CommentService commentService;
 
+    /**
+     * 发送评论
+     */
     @PostMapping("/send")
     public ResponseEntity<Map<String, Object>> send(
             @RequestHeader("X-User-Id") Long userId,
@@ -26,6 +29,9 @@ public class CommentController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "评论成功", "data", comment));
     }
 
+    /**
+     * 获取视频评论列表
+     */
     @GetMapping("/list/{videoId}")
     public ResponseEntity<Map<String, Object>> list(@PathVariable Long videoId) {
         List<CommentDTO> comments = commentService.getCommentsByVideoId(videoId);

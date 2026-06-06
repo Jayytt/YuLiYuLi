@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
 
+    /**
+     * 发送评论并保存到数据库
+     */
     @Override
     public CommentDTO send(CommentSendRequest request, Long userId, String userName, String userAvatar) {
         Comment comment = new Comment();
@@ -38,6 +41,9 @@ public class CommentServiceImpl implements CommentService {
         return toDTO(comment);
     }
 
+    /**
+     * 获取指定视频的评论列表（含回复）
+     */
     @Override
     public List<CommentDTO> getCommentsByVideoId(Long videoId) {
         List<Comment> rootComments = commentMapper.selectList(
@@ -67,6 +73,9 @@ public class CommentServiceImpl implements CommentService {
         return result;
     }
 
+    /**
+     * 将评论实体转换为DTO对象
+     */
     private CommentDTO toDTO(Comment comment) {
         CommentDTO dto = new CommentDTO();
         BeanUtils.copyProperties(comment, dto);

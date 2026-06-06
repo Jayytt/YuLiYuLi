@@ -26,6 +26,9 @@ public class MessageServiceImpl implements MessageService {
     private static final String UNREAD_COUNT_KEY = "message:unread:";
     private static final long UNREAD_COUNT_EXPIRE_MINUTES = 30;
 
+    /**
+     * 发送系统消息
+     */
     @Override
     public MessageDTO sendSystemMessage(String content) {
         Message message = new Message();
@@ -39,6 +42,9 @@ public class MessageServiceImpl implements MessageService {
         return toDTO(message);
     }
 
+    /**
+     * 发送私信并清除接收者的未读消息缓存
+     */
     @Override
     public MessageDTO sendPersonalMessage(Long senderId, Long receiverId, String content) {
         Message message = new Message();
@@ -53,6 +59,9 @@ public class MessageServiceImpl implements MessageService {
         return toDTO(message);
     }
 
+    /**
+     * 根据请求类型分发系统消息或私信
+     */
     @Override
     public MessageDTO send(MessageSendRequest request, Long senderId) {
         if (request.getType() != null && request.getType() == 0) {
@@ -64,6 +73,9 @@ public class MessageServiceImpl implements MessageService {
         return sendPersonalMessage(senderId, request.getReceiverId(), request.getContent());
     }
 
+    /**
+     * 分页获取用户收到的消息列表
+     */
     @Override
     public List<MessageDTO> getMessages(Long userId, int page, int size) {
         LambdaQueryWrapper<Message> wrapper = new LambdaQueryWrapper<Message>()
@@ -73,6 +85,9 @@ public class MessageServiceImpl implements MessageService {
         return messages.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 标记消息为已读并清除接收者的未读消息缓存
+     */
     @Override
     public void markAsRead(Long messageId) {
         Message message = messageMapper.selectById(messageId);
@@ -84,6 +99,9 @@ public class MessageServiceImpl implements MessageService {
         clearUnreadCountCache(message.getReceiverId());
     }
 
+    /**
+     * 获取用户的未读消息数量，优先从Redis缓存读取
+     */
     @Override
     public long getUnreadCount(Long userId) {
         String cacheKey = UNREAD_COUNT_KEY + userId;
@@ -100,10 +118,16 @@ public class MessageServiceImpl implements MessageService {
         return count;
     }
 
+    /**
+     * 清除指定用户的未读消息数Redis缓存
+     */
     private void clearUnreadCountCache(Long userId) {
         redisTemplate.delete(UNREAD_COUNT_KEY + userId);
     }
 
+    /**
+     * 将消息实体转换为DTO对象
+     */
     private MessageDTO toDTO(Message message) {
         MessageDTO dto = new MessageDTO();
         BeanUtils.copyProperties(message, dto);

@@ -17,6 +17,9 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * 用户登录接口，验证用户名和密码并返回令牌
+     */
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = userService.login(request);
@@ -27,6 +30,9 @@ public class UserController {
         ));
     }
 
+    /**
+     * 用户注册接口，创建新用户账号
+     */
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
         userService.register(request);
@@ -37,6 +43,9 @@ public class UserController {
         ));
     }
 
+    /**
+     * 获取当前登录用户的信息
+     */
     @GetMapping("/info")
     public ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader("X-User-Id") Long userId) {
         UserDTO user = userService.getUserById(userId);
@@ -47,6 +56,9 @@ public class UserController {
         ));
     }
 
+    /**
+     * 根据用户ID获取用户信息
+     */
     @GetMapping("/info/{userId}")
     public ResponseEntity<Map<String, Object>> getUserInfoById(@PathVariable Long userId) {
         UserDTO user = userService.getUserById(userId);
@@ -57,6 +69,9 @@ public class UserController {
         ));
     }
 
+    /**
+     * 更新当前用户的个人资料
+     */
     @PutMapping("/profile")
     public ResponseEntity<Map<String, Object>> updateProfile(
             @RequestHeader("X-User-Id") Long userId,
@@ -69,6 +84,9 @@ public class UserController {
         ));
     }
 
+    /**
+     * 用户退出登录，将令牌加入黑名单
+     */
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(
             @RequestHeader("X-User-Id") Long userId,
@@ -83,6 +101,9 @@ public class UserController {
         ));
     }
 
+    /**
+     * 管理员分页查询用户列表
+     */
     @GetMapping("/admin/list")
     public ResponseEntity<Map<String, Object>> adminList(
             @RequestParam(defaultValue = "0") int page,
@@ -96,6 +117,9 @@ public class UserController {
         ));
     }
 
+    /**
+     * 管理员切换用户启用/禁用状态
+     */
     @PostMapping("/admin/toggle-status")
     public ResponseEntity<Map<String, Object>> toggleStatus(@RequestBody Map<String, Long> body) {
         Long userId = body.get("userId");

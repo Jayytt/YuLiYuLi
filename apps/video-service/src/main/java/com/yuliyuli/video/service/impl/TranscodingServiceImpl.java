@@ -20,6 +20,9 @@ public class TranscodingServiceImpl implements TranscodingService {
     @Value("${video.cover-dir:./uploads/covers}")
     private String coverDir;
 
+    /**
+     * 对视频进行转码，生成多分辨率版本和缩略图
+     */
     @Override
     public void transcode(Long videoId, String originalPath) {
         Video video = videoMapper.selectById(videoId);
@@ -54,6 +57,9 @@ public class TranscodingServiceImpl implements TranscodingService {
         }
     }
 
+    /**
+     * 将视频转码为指定分辨率
+     */
     private void transcodeToResolution(String input, String baseName, String suffix, int width, int height) {
         String output = videoDir + "/" + baseName + "_" + suffix + ".mp4";
         ProcessBuilder pb = new ProcessBuilder(
@@ -72,6 +78,9 @@ public class TranscodingServiceImpl implements TranscodingService {
         }
     }
 
+    /**
+     * 从视频中截取缩略图
+     */
     private void generateThumbnail(String input, String output) {
         ProcessBuilder pb = new ProcessBuilder(
                 "ffmpeg", "-i", input, "-ss", "00:00:01", "-vframes", "1", "-y", output

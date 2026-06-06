@@ -15,6 +15,9 @@ import java.util.Map;
 public class FollowController {
     private final FollowService followService;
 
+    /**
+     * 关注指定用户
+     */
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> add(
             @RequestHeader("X-User-Id") Long userId,
@@ -23,6 +26,9 @@ public class FollowController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "关注成功", "data", ""));
     }
 
+    /**
+     * 取消关注指定用户
+     */
     @PostMapping("/remove")
     public ResponseEntity<Map<String, Object>> remove(
             @RequestHeader("X-User-Id") Long userId,
@@ -31,6 +37,9 @@ public class FollowController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "取消关注成功", "data", ""));
     }
 
+    /**
+     * 检查当前用户是否已关注指定用户
+     */
     @GetMapping("/check/{userId}")
     public ResponseEntity<Map<String, Object>> check(
             @RequestHeader("X-User-Id") Long currentUserId,
@@ -39,12 +48,18 @@ public class FollowController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", following));
     }
 
+    /**
+     * 获取当前用户的关注列表
+     */
     @GetMapping("/following")
     public ResponseEntity<Map<String, Object>> following(@RequestHeader("X-User-Id") Long userId) {
         List<FollowDTO> follows = followService.getFollowing(userId);
         return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", follows));
     }
 
+    /**
+     * 获取当前用户的粉丝列表
+     */
     @GetMapping("/followers")
     public ResponseEntity<Map<String, Object>> followers(@RequestHeader("X-User-Id") Long userId) {
         List<FollowDTO> follows = followService.getFollowers(userId);

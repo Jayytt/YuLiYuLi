@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 public class FavoriteServiceImpl implements FavoriteService {
     private final FavoriteMapper favoriteMapper;
 
+    /**
+     * 添加视频收藏，若已收藏则忽略
+     */
     @Override
     public void addFavorite(Long userId, Long videoId) {
         Long count = favoriteMapper.selectCount(
@@ -35,6 +38,9 @@ public class FavoriteServiceImpl implements FavoriteService {
         favoriteMapper.insert(favorite);
     }
 
+    /**
+     * 移除视频收藏
+     */
     @Override
     public void removeFavorite(Long userId, Long videoId) {
         favoriteMapper.delete(
@@ -44,6 +50,9 @@ public class FavoriteServiceImpl implements FavoriteService {
         );
     }
 
+    /**
+     * 判断用户是否已收藏指定视频
+     */
     @Override
     public boolean isFavorited(Long userId, Long videoId) {
         Long count = favoriteMapper.selectCount(
@@ -54,6 +63,9 @@ public class FavoriteServiceImpl implements FavoriteService {
         return count > 0;
     }
 
+    /**
+     * 获取用户的全部收藏列表
+     */
     @Override
     public List<FavoriteDTO> getUserFavorites(Long userId) {
         List<Favorite> favorites = favoriteMapper.selectList(
@@ -64,6 +76,9 @@ public class FavoriteServiceImpl implements FavoriteService {
         return favorites.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 将收藏实体转换为DTO对象
+     */
     private FavoriteDTO toDTO(Favorite favorite) {
         FavoriteDTO dto = new FavoriteDTO();
         BeanUtils.copyProperties(favorite, dto);

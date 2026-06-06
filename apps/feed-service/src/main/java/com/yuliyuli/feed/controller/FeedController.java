@@ -16,6 +16,9 @@ import java.util.Map;
 public class FeedController {
     private final FeedService feedService;
 
+    /**
+     * 发布动态
+     */
     @PostMapping("/publish")
     public ResponseEntity<Map<String, Object>> publish(
             @RequestHeader("X-User-Id") Long userId,
@@ -32,6 +35,9 @@ public class FeedController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "发布成功", "data", feed));
     }
 
+    /**
+     * 分页获取当前用户的动态列表
+     */
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> list(
             @RequestHeader("X-User-Id") Long userId,
@@ -41,6 +47,9 @@ public class FeedController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", feeds));
     }
 
+    /**
+     * 获取关注用户的动态列表
+     */
     @GetMapping("/following")
     public ResponseEntity<Map<String, Object>> following(
             @RequestHeader("X-User-Id") Long userId,

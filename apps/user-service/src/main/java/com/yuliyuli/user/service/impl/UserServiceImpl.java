@@ -31,6 +31,9 @@ public class UserServiceImpl implements UserService {
     private static final String USER_INFO_PREFIX = "user:info:";
     private static final long USER_INFO_TTL_MINUTES = 30;
 
+    /**
+     * 用户登录，验证凭据并生成JWT令牌
+     */
     @Override
     public LoginResponse login(LoginRequest request) {
         User user = userMapper.selectOne(
@@ -47,6 +50,9 @@ public class UserServiceImpl implements UserService {
         return new LoginResponse(token, userDTO);
     }
 
+    /**
+     * 用户注册，创建新用户并加密密码
+     */
     @Override
     public void register(RegisterRequest request) {
         Long count = userMapper.selectCount(
@@ -66,6 +72,9 @@ public class UserServiceImpl implements UserService {
         userMapper.insert(user);
     }
 
+    /**
+     * 根据用户ID查询用户信息，优先读取Redis缓存
+     */
     @Override
     public UserDTO getUserById(Long userId) {
         // Check cache first
@@ -96,6 +105,9 @@ public class UserServiceImpl implements UserService {
         return dto;
     }
 
+    /**
+     * 更新用户个人资料并清除缓存
+     */
     @Override
     public void updateProfile(Long userId, UpdateProfileRequest request) {
         User user = userMapper.selectById(userId);
@@ -114,6 +126,9 @@ public class UserServiceImpl implements UserService {
         redisTemplate.delete(USER_INFO_PREFIX + userId);
     }
 
+    /**
+     * 用户退出登录，将令牌加入Redis黑名单
+     */
     @Override
     public void logout(String token) {
         try {
@@ -128,6 +143,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 管理员分页查询用户列表，支持关键词搜索
+     */
     @Override
     public List<UserDTO> adminListUsers(int page, int size, String keyword) {
         Page<User> userPage = new Page<>(page, size);
@@ -144,6 +162,9 @@ public class UserServiceImpl implements UserService {
         return result.getRecords().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 切换用户启用/禁用状态
+     */
     @Override
     public void toggleUserStatus(Long userId) {
         User user = userMapper.selectById(userId);
@@ -159,6 +180,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 将用户实体转换为DTO对象
+     */
     private UserDTO toDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());

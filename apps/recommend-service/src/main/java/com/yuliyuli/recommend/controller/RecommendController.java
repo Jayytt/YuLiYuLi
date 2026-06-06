@@ -15,6 +15,9 @@ import java.util.Map;
 public class RecommendController {
     private final RecommendService recommendService;
 
+    /**
+     * 获取推荐视频列表
+     */
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> list(
             @RequestParam(defaultValue = "0") int page,
@@ -23,6 +26,9 @@ public class RecommendController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", videos));
     }
 
+    /**
+     * 获取分类热门视频列表
+     */
     @GetMapping("/hot")
     public ResponseEntity<Map<String, Object>> hot(
             @RequestParam Long categoryId,
@@ -32,6 +38,9 @@ public class RecommendController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "success", "data", videos));
     }
 
+    /**
+     * 记录视频观看行为
+     */
     @PostMapping("/record")
     public ResponseEntity<Map<String, Object>> record(@RequestBody Map<String, Object> body) {
         Long videoId = Long.valueOf(body.get("videoId").toString());

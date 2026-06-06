@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 public class FeedServiceImpl implements FeedService {
     private final FeedMapper feedMapper;
 
+    /**
+     * 发布新动态并保存到数据库
+     */
     @Override
     public FeedDTO publishFeed(Long userId, String userName, String userAvatar,
                                String type, Long videoId, String videoTitle,
@@ -36,6 +39,9 @@ public class FeedServiceImpl implements FeedService {
         return toDTO(feed);
     }
 
+    /**
+     * 分页获取指定用户的动态列表
+     */
     @Override
     public List<FeedDTO> getUserFeed(Long userId, int page, int size) {
         List<Feed> feeds = feedMapper.findByUserIdOrderByCreatedAtDesc(
@@ -43,6 +49,9 @@ public class FeedServiceImpl implements FeedService {
         return feeds.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 分页获取关注用户的动态列表
+     */
     @Override
     public List<FeedDTO> getFollowingFeed(List<Long> followingUserIds, int page, int size) {
         List<Feed> feeds = feedMapper.findByUserIdInOrderByCreatedAtDesc(
@@ -50,6 +59,9 @@ public class FeedServiceImpl implements FeedService {
         return feeds.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 将动态实体转换为DTO对象
+     */
     private FeedDTO toDTO(Feed feed) {
         FeedDTO dto = new FeedDTO();
         BeanUtils.copyProperties(feed, dto);

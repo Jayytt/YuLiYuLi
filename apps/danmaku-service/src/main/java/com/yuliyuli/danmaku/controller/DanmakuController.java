@@ -16,6 +16,9 @@ import java.util.Map;
 public class DanmakuController {
     private final DanmakuService danmakuService;
 
+    /**
+     * 发送弹幕
+     */
     @PostMapping("/send")
     public ResponseEntity<Map<String, Object>> send(
             @RequestHeader("X-User-Id") Long userId,
@@ -25,6 +28,9 @@ public class DanmakuController {
         return ResponseEntity.ok(Map.of("code", 200, "message", "发送成功", "data", danmaku));
     }
 
+    /**
+     * 获取视频弹幕列表
+     */
     @GetMapping("/list/{videoId}")
     public ResponseEntity<Map<String, Object>> list(@PathVariable Long videoId) {
         List<DanmakuDTO> danmakus = danmakuService.getDanmakuByVideoId(videoId);

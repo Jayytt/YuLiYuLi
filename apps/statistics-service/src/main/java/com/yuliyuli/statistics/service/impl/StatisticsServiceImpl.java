@@ -25,7 +25,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     private static final String HOT_KEYWORDS_KEY = "search:hot:keywords";
 
     /**
-     * Get today's dashboard stats summary
+     * 获取今日仪表盘统计数据
      */
     @Override
     public DailyStats getDashboard() {
@@ -47,7 +47,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     /**
-     * Get user growth trend for the last N days
+     * 获取最近N天的用户增长趋势数据
      */
     @Override
     public List<DailyStats> getUserGrowthChart(int days) {
@@ -71,7 +71,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     /**
-     * Get video stats trend for the last N days
+     * 获取最近N天的视频统计数据趋势
      */
     @Override
     public List<DailyStats> getVideoStatsChart(int days) {
@@ -80,7 +80,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     /**
-     * Get category popularity ranking for today
+     * 获取今日分类热度排行榜
      */
     @Override
     public List<CategoryStats> getCategoryRanking() {
@@ -93,7 +93,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     /**
-     * Get hot search keywords from Redis sorted set
+     * 从Redis有序集合中获取热门搜索关键词
      */
     @Override
     public List<Map<String, Object>> getHotSearchKeywords() {
@@ -113,6 +113,9 @@ public class StatisticsServiceImpl implements StatisticsService {
         return result;
     }
 
+    /**
+     * 创建指定日期的空统计数据对象
+     */
     private DailyStats createEmptyDailyStats(LocalDate date) {
         DailyStats stats = new DailyStats();
         stats.setStatDate(date);

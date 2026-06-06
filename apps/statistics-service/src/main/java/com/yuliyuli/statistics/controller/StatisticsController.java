@@ -17,6 +17,9 @@ public class StatisticsController {
 
     private final StatisticsService statisticsService;
 
+    /**
+     * 获取今日仪表盘统计数据
+     */
     @GetMapping("/dashboard")
     public ResponseEntity<Map<String, Object>> getDashboard() {
         DailyStats data = statisticsService.getDashboard();
@@ -27,6 +30,9 @@ public class StatisticsController {
         ));
     }
 
+    /**
+     * 获取用户增长趋势图表数据
+     */
     @GetMapping("/user-growth")
     public ResponseEntity<Map<String, Object>> getUserGrowthChart(
             @RequestParam(defaultValue = "7") Integer days) {
@@ -38,6 +44,9 @@ public class StatisticsController {
         ));
     }
 
+    /**
+     * 获取视频统计数据趋势图表
+     */
     @GetMapping("/video-stats")
     public ResponseEntity<Map<String, Object>> getVideoStatsChart(
             @RequestParam(defaultValue = "7") Integer days) {
@@ -49,6 +58,9 @@ public class StatisticsController {
         ));
     }
 
+    /**
+     * 获取分类热度排行榜
+     */
     @GetMapping("/category-ranking")
     public ResponseEntity<Map<String, Object>> getCategoryRanking() {
         List<CategoryStats> data = statisticsService.getCategoryRanking();
@@ -59,6 +71,9 @@ public class StatisticsController {
         ));
     }
 
+    /**
+     * 获取热门搜索关键词列表
+     */
     @GetMapping("/hot-keywords")
     public ResponseEntity<Map<String, Object>> getHotSearchKeywords() {
         List<Map<String, Object>> data = statisticsService.getHotSearchKeywords();

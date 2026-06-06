@@ -22,6 +22,9 @@ public class DanmakuServiceImpl implements DanmakuService {
     private final SimpMessagingTemplate messagingTemplate;
     private final StringRedisTemplate redisTemplate;
 
+    /**
+     * 发送弹幕并通过WebSocket广播
+     */
     @Override
     public DanmakuDTO send(DanmakuSendRequest request, Long userId, String userName) {
         Danmaku danmaku = new Danmaku();
@@ -41,17 +44,26 @@ public class DanmakuServiceImpl implements DanmakuService {
         return dto;
     }
 
+    /**
+     * 获取指定视频的弹幕列表
+     */
     @Override
     public List<DanmakuDTO> getDanmakuByVideoId(Long videoId) {
         List<Danmaku> danmakus = danmakuMapper.findByVideoIdOrderByTimeAsc(videoId);
         return danmakus.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * 获取指定视频的弹幕数量
+     */
     @Override
     public long getDanmakuCount(Long videoId) {
         return danmakuMapper.countByVideoId(videoId);
     }
 
+    /**
+     * 将弹幕实体转换为DTO对象
+     */
     private DanmakuDTO toDTO(Danmaku danmaku) {
         DanmakuDTO dto = new DanmakuDTO();
         BeanUtils.copyProperties(danmaku, dto);

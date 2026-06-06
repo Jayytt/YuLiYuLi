@@ -96,5 +96,12 @@
         <module>apps/config-service</module>
         <module>apps/statistics-service</module>
         <module>apps/video-service</module>
+        <module>apps/comment-service</module>
+        <module>apps/danmaku-service</module>
+        <module>apps/favorite-service</module>
+        <module>apps/feed-service</module>
+        <module>apps/follow-service</module>
+        <module>apps/message-service</module>
+        <module>apps/recommend-service</module>
     </modules>
 </project>

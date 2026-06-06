@@ -182,17 +182,36 @@ public interface XxxMapper extends BaseMapper<Xxx> {
 
 ### 2.6 Service 模板
 
+Service 层采用 **接口 + 实现类** 模式：
+
+**接口** `XxxService.java`（`service` 包）：
+```java
+public interface XxxService {
+    /**
+     * 方法说明（中文）
+     */
+    ReturnType methodName(ParamType param);
+}
+```
+
+**实现类** `XxxServiceImpl.java`（`service.impl` 包）：
 ```java
 @Service
 @RequiredArgsConstructor
-public class XxxService {
+public class XxxServiceImpl implements XxxService {
 
     private final XxxMapper xxxMapper;
     // 注入其他依赖（RedisTemplate、ObjectMapper 等）
 
-    // 业务方法
-    // 缓存策略：先查 Redis → miss 则查 DB → 回填缓存
-    // 异常处理：业务异常直接 throw RuntimeException
+    /**
+     * 方法说明（中文）
+     */
+    @Override
+    public ReturnType methodName(ParamType param) {
+        // 业务逻辑
+        // 缓存策略：先查 Redis → miss 则查 DB → 回填缓存
+        // 异常处理：业务异常直接 throw RuntimeException
+    }
 }
 ```
 
@@ -206,6 +225,9 @@ public class XxxController {
 
     private final XxxService xxxService;
 
+    /**
+     * 方法说明（中文）
+     */
     @PostMapping("/action")
     public ResponseEntity<Map<String, Object>> action(@Valid @RequestBody XxxRequest request) {
         // 调用 service
@@ -218,7 +240,38 @@ public class XxxController {
 }
 ```
 
-### 2.8 全局异常处理
+### 2.8 方法注释规范
+
+所有 Controller 和 ServiceImpl 的 **public 方法** 必须添加 Javadoc 注释，格式如下：
+
+```java
+/**
+ * 中文方法功能说明
+ */
+```
+
+规则：
+- 使用中文简要描述方法功能，一句话即可
+- 放在方法注解（如 `@Override`、`@PostMapping`）之前
+- 不需要 `@param`、`@return` 等标签，保持简洁
+- private 方法可选添加
+
+示例：
+```java
+/**
+ * 用户JWT登录认证
+ */
+@Override
+public AdminLoginResponse adminLogin(String username, String password) { ... }
+
+/**
+ * 获取视频详情
+ */
+@GetMapping("/detail/{id}")
+public ResponseEntity<Map<String, Object>> getVideoDetail(@PathVariable Long id) { ... }
+```
+
+### 2.9 全局异常处理
 
 每个微服务必须在 `config` 包下提供 `GlobalExceptionHandler`：
 
@@ -237,7 +290,7 @@ public class GlobalExceptionHandler {
 }
 ```
 
-### 2.9 MyBatis-Plus 配置
+### 2.10 MyBatis-Plus 配置
 
 每个使用分页查询的服务必须包含分页插件配置：
 

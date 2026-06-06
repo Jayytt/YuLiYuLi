@@ -5,6 +5,7 @@ import com.yuliyuli.user.dto.RegisterRequest;
 import com.yuliyuli.user.dto.UserDTO;
 import com.yuliyuli.user.entity.User;
 import com.yuliyuli.user.mapper.UserMapper;
+import com.yuliyuli.user.service.impl.UserServiceImpl;
 import com.yuliyuli.user.config.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ class UserServiceTest {
     private ValueOperations<String, String> valueOperations;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Test
     void register_shouldCreateUser() {
